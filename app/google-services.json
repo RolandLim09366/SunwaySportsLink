@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "993964376424",
+    "project_id": "sunwaysportslink",
+    "storage_bucket": "sunwaysportslink.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993964376424:android:394042e85780a330ce96dd",
+        "android_client_info": {
+          "package_name": "com.example.sunwaysportslink"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC934zN8MIRqP18dtQrcSDWumedPm8nRsA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
