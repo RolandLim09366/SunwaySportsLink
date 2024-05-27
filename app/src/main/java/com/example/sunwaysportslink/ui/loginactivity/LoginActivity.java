@@ -1,6 +1,7 @@
 package com.example.sunwaysportslink.ui.loginactivity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sunwaysportslink.MainActivity;
 import com.example.sunwaysportslink.R;
+import com.example.sunwaysportslink.ui.register.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -27,6 +29,11 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressbar;
 
     private FirebaseAuth mAuth;
+
+    public static void startIntent(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent); // Start the LoginActivity directly
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

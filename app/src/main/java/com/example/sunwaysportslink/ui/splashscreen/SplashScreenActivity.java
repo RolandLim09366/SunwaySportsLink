@@ -6,12 +6,12 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.sunwaysportslink.MainActivity;
 import com.example.sunwaysportslink.R;
+import com.example.sunwaysportslink.ui.register.RegisterActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
     // Set the duration of the splash screen in milliseconds
-    private static final int SPLASH_DURATION = 9000; // 3 seconds
+    private static final int SPLASH_DURATION = 3000; // 3 seconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +22,9 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // Start the main activity after the splash screen duration
-                Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                // Start the RegisterActivity
+                Intent intent = RegisterActivity.startIntent(getApplicationContext());
                 startActivity(intent);
-                finish();
             }
         }, SPLASH_DURATION);
     }
