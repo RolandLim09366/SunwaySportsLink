@@ -14,9 +14,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.sunwaysportslink.MainActivity;
 import com.example.sunwaysportslink.R;
-import com.example.sunwaysportslink.ui.loginactivity.LoginActivity;
+import com.example.sunwaysportslink.ui.home.HomeActivity;
+import com.example.sunwaysportslink.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -30,9 +30,9 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressBar progressbar;
     private FirebaseAuth mAuth;
 
-    public static Intent startIntent(Context context) {
+    public static void startIntent(Context context) {
         Intent intent = new Intent(context, RegisterActivity.class);
-        return intent;
+        context.startActivity(intent); // Start the RegisterActivity directly
     }
 
     @Override
@@ -99,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
                     progressbar.setVisibility(View.GONE);
 
                     // if the user created intent to login activity
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
                     startActivity(intent);
                 } else {
 
