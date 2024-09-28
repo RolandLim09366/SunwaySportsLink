@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">Sunway SportsLink</string>
+    <string name="app_name">Sunway University\n Sports Organizer</string>
+    <string name="registration">Registration</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="had_account">Existing User?</string>
+    <string name="sign_in">&#160;Click Here to Login</string>
+
+
 </resources>
