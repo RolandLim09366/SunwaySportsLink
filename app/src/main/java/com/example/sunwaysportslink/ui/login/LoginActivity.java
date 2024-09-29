@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sunwaysportslink.R;
+import com.example.sunwaysportslink.model.User;
 import com.example.sunwaysportslink.ui.home.HomeActivity;
 import com.example.sunwaysportslink.ui.register.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,9 +28,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText emailTextView, passwordTextView;
     private TextView enterTextView, signUpTextView, forgotPasswordTextView;
-    private Button Btn;
     private ProgressBar progressbar;
-
     private FirebaseAuth mAuth;
 
     public static void startIntent(Context context) {
@@ -97,21 +96,26 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please enter password!!", Toast.LENGTH_LONG).show();
             return;
         }
+        if (TextUtils.isEmpty(password) && TextUtils.isEmpty(email)) {
+            Toast.makeText(getApplicationContext(), "Please enter all of the information!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        User user = new User(email, password);
 
         // signin existing user
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "Login successful!!", Toast.LENGTH_LONG).show();
 
                     // hide the progress bar
-//                                    progressBar.setVisibility(View.GONE);
+                    progressbar.setVisibility(View.GONE);
 
                     // if sign-in is successful
                     // intent to home activity
-                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                    startActivity(intent);
+                    HomeActivity.startIntent(LoginActivity.this);
                 } else {
 
                     // sign-in failed

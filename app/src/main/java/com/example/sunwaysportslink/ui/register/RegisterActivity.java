@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sunwaysportslink.R;
+import com.example.sunwaysportslink.model.User;
 import com.example.sunwaysportslink.ui.home.HomeActivity;
 import com.example.sunwaysportslink.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -70,12 +71,11 @@ public class RegisterActivity extends AppCompatActivity {
     private void registerNewUser() {
 
         // show the visibility of progress bar to show loading
-//        progressbar.setVisibility(View.VISIBLE);
+        progressbar.setVisibility(View.VISIBLE);
 
         // Take the value of two edit texts in Strings
-        String email, password;
-        email = emailTextView.getText().toString();
-        password = passwordTextView.getText().toString();
+        String email = emailTextView.getText().toString();
+        String password = passwordTextView.getText().toString();
 
         // Validations for input email and password
         if (TextUtils.isEmpty(email)) {
@@ -86,9 +86,15 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please enter password!", Toast.LENGTH_LONG).show();
             return;
         }
+        if (TextUtils.isEmpty(password) && TextUtils.isEmpty(email)) {
+            Toast.makeText(getApplicationContext(), "Please enter all of the information!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        User newUser = new User(email, password);
 
         // create new user or register new user
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.createUserWithEmailAndPassword(newUser.getEmail(), newUser.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -99,8 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
                     progressbar.setVisibility(View.GONE);
 
                     // if the user created intent to login activity
-                    Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
-                    startActivity(intent);
+                    LoginActivity.startIntent(RegisterActivity.this);
                 } else {
 
                     // Registration failed

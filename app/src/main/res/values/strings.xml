@@ -16,6 +16,9 @@
     <string name="password">PASSWORD</string>
     <string name="send">SEND</string>
     <string name="reminder">Provide your account\'s email for which you want to reset your password!</string>
+    <string name="account_details">Account Details</string>
+    <string name="notification">Notification</string>
+    <string name="change_password">Change Password</string>
 
 
 
