@@ -1,14 +1,21 @@
 package com.example.sunwaysportslink.ui.setting;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sunwaysportslink.R;
+import com.example.sunwaysportslink.databinding.FragmentSettingBinding;
+import com.example.sunwaysportslink.ui.login.LoginActivity;
+import com.google.firebase.auth.FirebaseAuth;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +28,9 @@ public class SettingFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private SettingViewModel viewModel;
+    private FirebaseAuth mAuth; // Declare FirebaseAuth instance
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -51,6 +61,7 @@ public class SettingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance(); // Initialize Firebase Auth
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -58,9 +69,31 @@ public class SettingFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_setting, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout with DataBindingUtil
+        FragmentSettingBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_setting, container, false);
+
+        // Initialize the ViewModel
+        viewModel = new ViewModelProvider(this).get(SettingViewModel.class);
+
+        Button logoutButton = binding.btnLogOut; // Assuming btn_log_out is in the FragmentSettingBinding layout
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.logout();
+                LoginActivity.startIntent(getActivity());
+                Toast.makeText(getActivity(), "Logged out successfully!", Toast.LENGTH_SHORT).show();
+                getActivity().finish(); // Close the current activity
+            }
+        });
+
+        // Bind ViewModel to the layout
+        binding.setViewModel(viewModel);
+
+        // Set lifecycle owner so that the layout can observe LiveData
+        binding.setLifecycleOwner(this);
+
+        return binding.getRoot();
     }
 }

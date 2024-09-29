@@ -26,6 +26,13 @@ android {
             )
         }
     }
+
+    // Enable data binding
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -47,6 +54,12 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation ("com.google.android.material:material:1.12.0")
 
+    // ViewModel and LiveData (for MVVM architecture)
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.0")
+
+    // DataBinding library (already comes with AndroidX)
+    implementation ("androidx.databinding:databinding-runtime:7.2.0")
 
 
 }
