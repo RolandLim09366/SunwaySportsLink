@@ -19,7 +19,11 @@
     <string name="account_details">Account Details</string>
     <string name="notification">Notification</string>
     <string name="change_password">Change Password</string>
+    <string name="event_listing">Event Listing</string>
+    <string name="search_bar_hint">Search for scheduled event</string>
+    <string name="filters">Filters</string>
+    <string name="sort_by">Sort By</string>
 
 
-
+    Event Listing
 </resources>
