@@ -1,9 +1,22 @@
 <resources>
     <string name="app_name">Sunway University\n Sports Organizer</string>
-    <string name="registration">Registration</string>
-    <string name="sign_up">Sign Up</string>
+    <string name="enter">Enter</string>
     <string name="had_account">Existing User?</string>
-    <string name="sign_in">&#160;Click Here to Login</string>
+    <string name="sign_in">&#160;<u>Click Here to Login</u></string>
+    <string name="no_account">&#160;New User?</string>
+    <string name="sign_up_now">&#160;<u>Sign Up Now</u></string>
+    <string name="sign_up">&#160;Sign Up</string>
+    <string name="email_address">Email Address</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="chat">Chat</string>
+    <string name="event">Event</string>
+    <string name="setting">Setting</string>
+    <string name="forgot">FORGOT</string>
+    <string name="password">PASSWORD</string>
+    <string name="send">SEND</string>
+    <string name="reminder">Provide your account\'s email for which you want to reset your password!</string>
+
 
 
 </resources>

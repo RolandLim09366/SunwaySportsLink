@@ -1,0 +1,10 @@
+<!-- res/drawable/rounded_edit_text_background.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/steelblue" /> <!-- Replace with the desired background color -->
+            <corners android:radius="6dp" /> <!-- Adjust the radius to get the desired roundness -->
+
+        </shape>
+    </item>
+</layer-list>
