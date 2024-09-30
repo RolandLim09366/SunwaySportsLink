@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sunwaysportslink.R;
-import com.example.sunwaysportslink.model.User;
 import com.example.sunwaysportslink.ui.home.HomeActivity;
 import com.example.sunwaysportslink.ui.register.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -86,24 +84,26 @@ public class LoginActivity extends AppCompatActivity {
         email = emailTextView.getText().toString();
         password = passwordTextView.getText().toString();
 
-        // validations for input email and password
+        if (TextUtils.isEmpty(password) && TextUtils.isEmpty(email)) {
+            Toast.makeText(getApplicationContext(), "Please enter all of the information!", Toast.LENGTH_LONG).show();
+            progressbar.setVisibility(View.GONE);
+            return;
+        }
+
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(getApplicationContext(), "Please enter email!!", Toast.LENGTH_LONG).show();
+            progressbar.setVisibility(View.GONE);
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(getApplicationContext(), "Please enter password!!", Toast.LENGTH_LONG).show();
-            return;
-        }
-        if (TextUtils.isEmpty(password) && TextUtils.isEmpty(email)) {
-            Toast.makeText(getApplicationContext(), "Please enter all of the information!", Toast.LENGTH_LONG).show();
+            progressbar.setVisibility(View.GONE);
             return;
         }
 
-        User user = new User(email, password);
         // signin existing user
-        mAuth.signInWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
@@ -118,7 +118,8 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
 
                     // sign-in failed
-                    Toast.makeText(getApplicationContext(), "Login failed!!", Toast.LENGTH_LONG).show();
+                    String errorMessage = task.getException().getMessage();
+                    Toast.makeText(getApplicationContext(), "Login failed!!" + errorMessage, Toast.LENGTH_LONG).show();
 
                     // hide the progress bar
                     progressbar.setVisibility(View.GONE);

@@ -4,30 +4,59 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.sunwaysportslink.ui.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SettingViewModel extends ViewModel {
 
-    private final MutableLiveData<String> _userEmail = new MutableLiveData<>();
-    public LiveData<String> userEmail = _userEmail;
-
+    private final MutableLiveData<String> _username = new MutableLiveData<>();
+    public LiveData<String> username = _username;
+    private final MutableLiveData<String> _profileImageUrl = new MutableLiveData<>();
+    public LiveData<String> profileImageUrl = _profileImageUrl;
     private final FirebaseAuth mAuth;
+    private final DatabaseReference usersRef;
 
     public SettingViewModel() {
         mAuth = FirebaseAuth.getInstance();
-        fetchUserEmail();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            usersRef = FirebaseDatabase.getInstance("https://sunwaysportslink-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                    .getReference("users").child(currentUser.getUid());
+            fetchUserDetails();
+        } else {
+            usersRef = null;
+        }
     }
 
-    // Fetch the user's email from Firebase
-    private void fetchUserEmail() {
+    private void fetchUserDetails() {
         if (mAuth.getCurrentUser() != null) {
-            String email = mAuth.getCurrentUser().getEmail();
-            if (email != null && email.contains("@")) {
-                // Split the email at the "@" and take the first part
-                String username = email.split("@")[0];
-                _userEmail.setValue(username); // Set the username instead of the full email
-            }
+            usersRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        String fetchedUsername = dataSnapshot.child("username").getValue(String.class);
+                        String fetchedProfileImageUrl = dataSnapshot.child("profileImageUrl").getValue(String.class);
+
+                        if (fetchedUsername != null) {
+                            _username.setValue(fetchedUsername);
+                        }
+
+                        if (fetchedProfileImageUrl != null) {
+                            _profileImageUrl.setValue(fetchedProfileImageUrl);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Handle error
+                }
+            });
         }
     }
 
@@ -35,6 +64,5 @@ public class SettingViewModel extends ViewModel {
     public void logout() {
         mAuth.signOut();
     }
-
 }
 
