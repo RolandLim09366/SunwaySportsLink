@@ -1,14 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp"
     tools:context=".ui.search.SearchFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="search" />
+        android:id="@+id/tv_event_listing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/event_listing"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/et_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/et_background"
+        android:elevation="4dp"
+        android:hint="@string/search_bar_hint"
+        android:paddingVertical="6dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="24dp"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_event_listing" />
+
+    <ImageView
+        android:id="@+id/ic_blue_search"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginLeft="-20dp"
+        android:elevation="6dp"
+        android:src="@drawable/ic_blue_search"
+        app:layout_constraintBottom_toBottomOf="@id/et_search_bar"
+        app:layout_constraintLeft_toRightOf="@id/et_search_bar"
+        app:layout_constraintTop_toTopOf="@+id/et_search_bar" />
+
+    <TextView
+        android:id="@+id/tv_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_filter_btn"
+        android:drawableLeft="@drawable/ic_filter"
+        android:drawableRight="@drawable/ic_arrow_downward"
+        android:drawablePadding="8dp"
+        android:paddingHorizontal="20dp"
+        android:text="@string/filters"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_search_bar" />
+
+    <TextView
+        android:id="@+id/tv_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/bg_filter_btn"
+        android:drawableLeft="@drawable/ic_sort_by"
+        android:drawableRight="@drawable/ic_arrow_downward"
+        android:drawablePadding="8dp"
+        android:paddingHorizontal="20dp"
+        android:text="@string/sort_by"
+        app:layout_constraintLeft_toRightOf="@id/tv_filter"
+        app:layout_constraintTop_toTopOf="@+id/tv_filter" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_filter" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,12 +3,18 @@ package com.example.sunwaysportslink.ui.search;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.sunwaysportslink.R;
+import com.example.sunwaysportslink.model.Event;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +31,9 @@ public class SearchFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private RecyclerView recyclerView;
+    private EventAdapter eventAdapter;
+    private List<Event> eventList;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -58,9 +67,31 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
+
+        // Initialize RecyclerView
+        recyclerView = view.findViewById(R.id.recyler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Initialize event list and adapter
+        eventList = new ArrayList<>();
+        eventAdapter = new EventAdapter(eventList);
+        recyclerView.setAdapter(eventAdapter);
+
+        // Populate the event list (you can replace this with actual data fetching later)
+        populateEvents();
+
+        return view;
+    }
+
+    // Sample method to populate events (replace with actual data fetching)
+    private void populateEvents() {
+        eventList.add(new Event("Football Tournament", "2024-10-01", "Sunway Stadium"));
+        eventList.add(new Event("Basketball Match", "2024-10-05", "Sunway Court"));
+        eventList.add(new Event("Badminton Championship", "2024-10-10", "Sunway Sports Complex"));
+
+        // Notify the adapter that the data has changed
+        eventAdapter.notifyDataSetChanged();
     }
 }
