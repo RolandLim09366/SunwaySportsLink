@@ -13,7 +13,6 @@
     <string name="event">Event</string>
     <string name="setting">Setting</string>
     <string name="forgot">FORGOT</string>
-    <string name="password">PASSWORD</string>
     <string name="send">SEND</string>
     <string name="reminder">Provide your account\'s email for which you want to reset your password!</string>
     <string name="account_details">Account Details</string>
@@ -23,7 +22,20 @@
     <string name="search_bar_hint">Search for scheduled event</string>
     <string name="filters">Filters</string>
     <string name="sort_by">Sort By</string>
+    <string name="notification_settings">Notification Settings</string>
+    <string name="notification_settings_desc">Get notifications to find out what\'s going on when you\'re not online. You turn these off.</string>
+    <string name="push_notification">Push Notification</string>
+    <string name="push_notification_desc">Receive event updates notifications</string>
+    <string name="chat_notification">Chat Notification</string>
+    <string name="chat_notification_desc">Receive chat notifications</string>
+    <string name="email_notification">Email Notification</string>
+    <string name="email_notification_desc">Receive weekly push email notifications</string>
+    <string name="create_new_password">Create New Password</string>
+    <string name="create_new_password_desc">Your password must be different from previous used passwords.</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Must be at least 8 characters.</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="confirm_password_hint">Both password must be match.</string>
+    <string name="reset_password">Reset Password</string>
 
-
-    Event Listing
 </resources>
