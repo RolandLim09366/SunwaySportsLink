@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.databinding.FragmentSettingBinding;
 import com.example.sunwaysportslink.ui.login.LoginActivity;
+import com.example.sunwaysportslink.ui.setting.changepassword.ChangePasswordActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 
@@ -78,6 +80,8 @@ public class SettingFragment extends Fragment {
 
         Button logoutButton = binding.btnLogOut; // Assuming btn_log_out is in the FragmentSettingBinding layout
 
+        ImageView changePasswordButton = binding.icBlackArrow3;
+
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +89,13 @@ public class SettingFragment extends Fragment {
                 LoginActivity.startIntent(getActivity());
                 Toast.makeText(getActivity(), "Logged out successfully!", Toast.LENGTH_SHORT).show();
                 getActivity().finish(); // Close the current activity
+            }
+        });
+
+        changePasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChangePasswordActivity.startIntent(getActivity());
             }
         });
 
