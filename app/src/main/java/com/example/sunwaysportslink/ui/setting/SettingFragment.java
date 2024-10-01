@@ -16,6 +16,7 @@ import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.databinding.FragmentSettingBinding;
 import com.example.sunwaysportslink.ui.login.LoginActivity;
 import com.example.sunwaysportslink.ui.setting.changepassword.ChangePasswordActivity;
+import com.example.sunwaysportslink.ui.setting.notification.NotificationActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 
@@ -82,6 +83,8 @@ public class SettingFragment extends Fragment {
 
         ImageView changePasswordButton = binding.icBlackArrow3;
 
+        ImageView notificationButton = binding.icBlackArrow2;
+
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +99,13 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ChangePasswordActivity.startIntent(getActivity());
+            }
+        });
+
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NotificationActivity.startIntent(getActivity());
             }
         });
 
