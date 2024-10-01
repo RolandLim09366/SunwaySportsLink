@@ -102,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         User user = new User(email, password);
-
         // signin existing user
         mAuth.signInWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
