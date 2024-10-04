@@ -10,11 +10,14 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.databinding.FragmentSettingBinding;
 import com.example.sunwaysportslink.ui.login.LoginActivity;
+import com.example.sunwaysportslink.ui.setting.accountdetails.AccountDetailsActivity;
 import com.example.sunwaysportslink.ui.setting.changepassword.ChangePasswordActivity;
 import com.example.sunwaysportslink.ui.setting.notification.NotificationActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -80,6 +83,7 @@ public class SettingFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(SettingViewModel.class);
 
         Button logoutButton = binding.btnLogOut; // Assuming btn_log_out is in the FragmentSettingBinding layout
+        ImageView accountButton = binding.icBlackArrow1;
 
         ImageView changePasswordButton = binding.icBlackArrow3;
 
@@ -106,6 +110,26 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 NotificationActivity.startIntent(getActivity());
+            }
+        });
+
+        accountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AccountDetailsActivity.startIntent(getActivity());
+            }
+        });
+
+        viewModel.profileImageUrl.observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String imageUrl) {
+                if (imageUrl != null && !imageUrl.isEmpty()) {
+                    Glide.with(SettingFragment.this).load(imageUrl).placeholder(R.drawable.iv_default_profile) // Placeholder image while loading
+                            .error(R.drawable.iv_default_profile)       // Fallback if image fails to load
+                            .into(binding.profilePicture);              // Use the binding to refer to the ImageView
+                } else {
+                    binding.profilePicture.setImageResource(R.drawable.iv_default_profile);
+                }
             }
         });
 
