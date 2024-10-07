@@ -5,17 +5,17 @@
         android:title="@string/home"
         android:icon="@drawable/ic_home"/>
     <item
-        android:id="@+id/search"
-        android:title="@string/search"
-        android:icon="@drawable/ic_search"/>
+        android:id="@+id/event"
+        android:title="@string/event"
+        android:icon="@drawable/ic_event"/>
     <item
         android:id="@+id/chat"
         android:title="@string/chat"
         android:icon="@drawable/ic_chat"/>
     <item
-        android:id="@+id/event"
+        android:id="@+id/create"
         android:title="@string/event"
-        android:icon="@drawable/ic_event"/>
+        android:icon="@drawable/ic_create"/>
     <item
         android:id="@+id/setting"
         android:title="@string/setting"

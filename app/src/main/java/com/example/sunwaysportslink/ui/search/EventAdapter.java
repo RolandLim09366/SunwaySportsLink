@@ -1,39 +1,61 @@
+// EventAdapter.java
 package com.example.sunwaysportslink.ui.search;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunwaysportslink.R;
+import com.example.sunwaysportslink.databinding.ItemEventBinding;
 import com.example.sunwaysportslink.model.Event;
 
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
-    private List<Event> eventList;
+    private final List<Event> eventList;
+    private final OnEventClickListener onEventClickListener;
 
-    public EventAdapter(List<Event> eventList) {
+    public EventAdapter(List<Event> eventList, OnEventClickListener onEventClickListener) {
         this.eventList = eventList;
+        this.onEventClickListener = onEventClickListener;
     }
 
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false);
-        return new EventViewHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        ItemEventBinding binding = ItemEventBinding.inflate(inflater, parent, false);
+        return new EventViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
-        holder.titleTextView.setText(event.getTitle());
-        holder.dateTextView.setText(event.getDate());
-        holder.locationTextView.setText(event.getLocation());
+        holder.bind(event);
+        // Dynamically set the image based on the event type
+        switch (event.getTitle().toLowerCase()) {
+            case "basketball":
+                holder.binding.ivSports.setImageResource(R.drawable.iv_basketball);
+                break;
+            case "football":
+                holder.binding.ivSports.setImageResource(R.drawable.iv_football);
+                break;
+            case "tennis":
+                holder.binding.ivSports.setImageResource(R.drawable.iv_tennis);
+                break;
+            case "futsal":
+                holder.binding.ivSports.setImageResource(R.drawable.iv_futsal);
+                break;
+            case "volleyball":
+                holder.binding.ivSports.setImageResource(R.drawable.iv_volleyball);
+                break;
+            default:
+                holder.binding.ivSports.setImageResource(R.drawable.iv_sports);  // Default image
+                break;
+        }
     }
 
     @Override
@@ -41,17 +63,26 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return eventList.size();
     }
 
-    static class EventViewHolder extends RecyclerView.ViewHolder {
+    public class EventViewHolder extends RecyclerView.ViewHolder {
 
-        TextView titleTextView;
-        TextView dateTextView;
-        TextView locationTextView;
+        private final ItemEventBinding binding;
 
-        public EventViewHolder(@NonNull View itemView) {
-            super(itemView);
-            titleTextView = itemView.findViewById(R.id.tv_event_title);
-            dateTextView = itemView.findViewById(R.id.tv_event_date_time);
-            locationTextView = itemView.findViewById(R.id.tv_event_location);
+        public EventViewHolder(ItemEventBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
+
+        public void bind(Event event) {
+            binding.tvEventTitle.setText(event.getTitle());
+            binding.tvEventDateTime.setText(event.getDate());
+            binding.tvEventLocation.setText(event.getVenue());
+
+            // Set click listener for each event
+            itemView.setOnClickListener(v -> onEventClickListener.onEventClick(event));
+        }
+    }
+
+    public interface OnEventClickListener {
+        void onEventClick(Event event);
     }
 }

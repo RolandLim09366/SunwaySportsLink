@@ -8,14 +8,13 @@
     android:padding="16dp"
     tools:context=".ui.search.SearchFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/tv_event_listing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/event_listing"
-        android:textSize="20sp"
+        android:layout_marginTop="16dp"
+        android:text="Event Listing"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +23,7 @@
         android:id="@+id/et_search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/et_background"
         android:elevation="4dp"
         android:hint="@string/search_bar_hint"
@@ -78,10 +77,24 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_filter" />
+
+    <TextView
+        android:id="@+id/tv_no_events"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Events Found"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recyler_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/recyler_view" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
