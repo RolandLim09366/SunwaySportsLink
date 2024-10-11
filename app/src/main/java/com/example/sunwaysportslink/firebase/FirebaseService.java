@@ -32,14 +32,6 @@ public class FirebaseService {
         return mAuth;
     }
 
-    // Reinitialize rootRef after the user is authenticated
-//    public void initializeRootRef() {
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser != null) {
-//            rootRef = FirebaseDatabase.getInstance("https://sunwaysportslink-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
-//        }
-//    }
-
     // Expose a general DatabaseReference (root)
     public DatabaseReference getRootRef() {
         return rootRef;

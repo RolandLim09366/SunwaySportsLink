@@ -1,14 +1,40 @@
 package com.example.sunwaysportslink.model;
 
-public class Event {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Event implements Serializable {
     private String title;
     private String date;
-    private String location;
+    private String venue;
+    private String startTime;
+    private String endTime;
+    private String participantLimit;
+    private String details;
+    private String createdBy;
+    private String currentParticipants;
+    private String eventKey;
+    private List<String> joinedUsers; // List to store joined users' UIDs
 
-    public Event(String title, String date, String location) {
+
+    // Default constructor required for calls to DataSnapshot.getValue(Event.class)
+    public Event() {
+    }
+
+    public Event(String title, String date, String venue, String startTime, String endTime, String participantLimit, String details, String createdBy) {
         this.title = title;
         this.date = date;
-        this.location = location;
+        this.venue = venue;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.participantLimit = participantLimit;
+        this.details = details;
+        this.createdBy = createdBy;
+        this.currentParticipants = "1";
+        this.joinedUsers = new ArrayList<>(); // Initialize the list
     }
 
     public String getTitle() {
@@ -19,7 +45,59 @@ public class Event {
         return date;
     }
 
-    public String getLocation() {
-        return location;
+    public String getVenue() {
+        return venue;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public String getParticipantLimit() {
+        return participantLimit;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getCurrentParticipants() {
+        return currentParticipants;
+    }
+
+    public String getEventKey() {
+        return eventKey;
+    }
+
+    public void setEventKey(String eventKey) {
+        this.eventKey = eventKey;
+    }
+
+    public void setCurrentParticipants(String updatedParticipants) {
+        this.currentParticipants = updatedParticipants;
+    }
+
+    // Method to add a user to the joinedUsers list
+    public void addJoinedUser(String userId) {
+        if (!joinedUsers.contains(userId)) { // Ensure no duplicates
+            joinedUsers.add(userId);
+        }
+
+    }
+    // Getter for the joinedUsers list
+    public List<String> getJoinedUsers() {
+        return joinedUsers;
     }
 }

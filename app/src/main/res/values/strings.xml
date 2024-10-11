@@ -37,5 +37,20 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="confirm_password_hint">Both password must be match.</string>
     <string name="reset_password">Reset Password</string>
+    <string name="create_event">CREATE EVENT</string>
+    <string name="event_details_hint">Beginner Level \nPlease be punctual\nGirls are welcomed</string>
+    <string name="event_details">EVENT DETAILS</string>
+    <string name="to">To</string>
+    <string name="end_time">End Time</string>
+    <string name="start_time">Start time</string>
+    <string name="select_date">Select Date</string>
+    <string name="event_date_and_time"><![CDATA[EVENT DATE & Time]]></string>
+    <string name="sunway_university_basketball_court">Sunway University Basketball Court</string>
+    <string name="venue">VENUE</string>
+    <string name="participant_limit">PARTICIPANT LIMIT</string>
+    <string name="eg_basketball_badminton">eg: Basketball Badminton</string>
+    <string name="event_type">EVENT TYPE</string>
+    <string name="event_cancelation"><![CDATA[Event Cancellations and Changes: Events may be subject to changes in timing, venue, or cancellation due to unforeseen circumstances, including weather conditions. Participants will be notified via the platform or contact details provided during registration.]]></string>
+    <string name="personal_responsibility">Personal Responsibility: By joining any event, participants acknowledge that they are participating at their own risk. The event organizers and the platform are not liable for any injuries, damages, or losses sustained during the event.</string>
 
 </resources>

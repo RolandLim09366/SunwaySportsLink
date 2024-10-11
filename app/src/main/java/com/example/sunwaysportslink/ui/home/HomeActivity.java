@@ -68,13 +68,13 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.home:
                 selectedFragment = firstFragment;
                 break;
-            case R.id.search:
+            case R.id.event:
                 selectedFragment = secondFragment;
                 break;
             case R.id.chat:
                 selectedFragment = thirdFragment;
                 break;
-            case R.id.event:
+            case R.id.create:
                 selectedFragment = fourthFragment;
                 break;
             case R.id.setting:
