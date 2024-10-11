@@ -15,7 +15,7 @@ import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
-    private final List<Event> eventList;
+    private List<Event> eventList;
     private final OnEventClickListener onEventClickListener;
 
     public EventAdapter(List<Event> eventList, OnEventClickListener onEventClickListener) {
@@ -63,6 +63,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return eventList.size();
     }
 
+    public void updateEvents(List<Event> updatedEvents) {
+        this.eventList = updatedEvents;
+        notifyDataSetChanged();
+    }
+
     public class EventViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemEventBinding binding;
@@ -76,6 +81,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             binding.tvEventTitle.setText(event.getTitle());
             binding.tvEventDateTime.setText(event.getDate());
             binding.tvEventLocation.setText(event.getVenue());
+            binding.tvOrganizer.setText("Organiser: " + event.getCreatedBy());
 
             // Set click listener for each event
             itemView.setOnClickListener(v -> onEventClickListener.onEventClick(event));

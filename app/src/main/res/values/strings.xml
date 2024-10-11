@@ -19,7 +19,7 @@
     <string name="notification">Notification</string>
     <string name="change_password">Change Password</string>
     <string name="event_listing">Event Listing</string>
-    <string name="search_bar_hint">Search for scheduled event</string>
+    <string name="search_bar_hint">Search with organizer name for scheduled event</string>
     <string name="filters">Filters</string>
     <string name="sort_by">Sort By</string>
     <string name="notification_settings">Notification Settings</string>
