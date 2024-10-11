@@ -46,7 +46,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // Enable the back arrow
             getSupportActionBar().setTitle("");       // Set the title of the page
         }
-        
+
         btnResetPassword.setOnClickListener(v -> changePassword());
     }
 
@@ -73,15 +73,14 @@ public class ChangePasswordActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-            user.updatePassword(newPassword)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(ChangePasswordActivity.this, "Password reset successful", Toast.LENGTH_SHORT).show();
-                            finish();  // Close the activity after successful password change
-                        } else {
-                            Toast.makeText(ChangePasswordActivity.this, "Password reset failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+            user.updatePassword(newPassword).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(ChangePasswordActivity.this, "Password reset successful", Toast.LENGTH_SHORT).show();
+                    finish();  // Close the activity after successful password change
+                } else {
+                    Toast.makeText(ChangePasswordActivity.this, "Password reset failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
         } else {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
         }

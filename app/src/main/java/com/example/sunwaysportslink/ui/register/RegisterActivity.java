@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,9 +75,9 @@ public class RegisterActivity extends AppCompatActivity {
         String email = emailTextView.getText().toString();
         String password = passwordTextView.getText().toString();
 
-        // Validate input
-        if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            showToastAndHideProgress("Please enter a valid email address!");
+        // Validate email input (exactly 8 digits followed by @imail.sunway.edu.my)
+        if (TextUtils.isEmpty(email) || !email.matches("^\\d{8}@imail\\.sunway\\.edu\\.my$")) {
+            showToastAndHideProgress("Please enter a valid Sunway email address!");
             return;
         }
 
@@ -93,22 +92,35 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
 
-                    // Get user ID and save user details to the database
-                    String userId = firebaseService.getAuth().getCurrentUser().getUid();
-                    User newUser = new User(email);
-                    firebaseService.getUserRef(userId).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    // Send email verification
+                    firebaseService.getAuth().getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
-                                LoginActivity.startIntent(RegisterActivity.this);
+                        public void onComplete(@NonNull Task<Void> emailTask) {
+                            if (emailTask.isSuccessful()) {
+
+                                // Get user ID and save user details to the database
+                                String userId = firebaseService.getAuth().getCurrentUser().getUid();
+                                User newUser = new User(email);
+                                firebaseService.getUserRef(userId).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getApplicationContext(), "Registration successful! Verification email sent.", Toast.LENGTH_LONG).show();
+                                            firebaseService.getAuth().signOut(); // Sign out the user after registration
+                                            LoginActivity.startIntent(RegisterActivity.this);
+                                        } else {
+                                            showToastAndHideProgress("Error: " + task.getException().getMessage());
+                                        }
+                                    }
+                                });
                             } else {
-                                showToastAndHideProgress("Error: " + task.getException().getMessage());
+                                showToastAndHideProgress("Failed to send verification email. Please try again.");
                             }
                         }
                     });
+
                 } else {
-                    showToastAndHideProgress("Registration failed! Please try again later");
+                    showToastAndHideProgress("Registration failed! Please try again later.");
                 }
             }
         });
