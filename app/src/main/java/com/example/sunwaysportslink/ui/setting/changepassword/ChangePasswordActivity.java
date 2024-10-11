@@ -13,14 +13,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.sunwaysportslink.R;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.sunwaysportslink.firebase.FirebaseService;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ChangePasswordActivity extends AppCompatActivity {
 
-    private EditText etPassword, etConfirmPassword;
+    private EditText etNewPassword, etConfirmPassword, etCurrentPassword;
     private Button btnResetPassword;
-    private FirebaseAuth mAuth;
+    private FirebaseService firebaseService;
 
     public static void startIntent(Context context) {
         Intent intent = new Intent(context, com.example.sunwaysportslink.ui.setting.changepassword.ChangePasswordActivity.class);
@@ -32,9 +34,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
-        mAuth = FirebaseAuth.getInstance();
+        firebaseService = FirebaseService.getInstance();
 
-        etPassword = findViewById(R.id.et_password);
+        etCurrentPassword = findViewById(R.id.et_current_password);
+        etNewPassword = findViewById(R.id.et_new_password);
         etConfirmPassword = findViewById(R.id.et_confirm_password);
         btnResetPassword = findViewById(R.id.send);
 
@@ -51,7 +54,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void changePassword() {
-        String password = etPassword.getText().toString().trim();
+
+        String password = etNewPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
         // Validate input fields
@@ -70,15 +74,42 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void performPasswordReset(String newPassword) {
-        FirebaseUser user = mAuth.getCurrentUser();
+
+        FirebaseUser user = firebaseService.getAuth().getCurrentUser();
 
         if (user != null) {
-            user.updatePassword(newPassword).addOnCompleteListener(task -> {
+            // Prompt the user to input their current password
+            String currentPassword = etCurrentPassword.getText().toString().trim();
+
+            if (TextUtils.isEmpty(currentPassword)) {
+                Toast.makeText(this, "Please enter your current password to continue", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Get the user's email
+            String email = user.getEmail();
+            if (email == null) {
+                Toast.makeText(this, "Error: User email not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Create an AuthCredential using the email and current password
+            AuthCredential credential = EmailAuthProvider.getCredential(email, currentPassword);
+
+            // Reauthenticate the user
+            user.reauthenticate(credential).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(ChangePasswordActivity.this, "Password reset successful", Toast.LENGTH_SHORT).show();
-                    finish();  // Close the activity after successful password change
+                    // If reauthentication is successful, proceed with password update
+                    user.updatePassword(newPassword).addOnCompleteListener(updateTask -> {
+                        if (updateTask.isSuccessful()) {
+                            Toast.makeText(ChangePasswordActivity.this, "Password reset successful", Toast.LENGTH_SHORT).show();
+                            finish();  // Close the activity after successful password change
+                        } else {
+                            Toast.makeText(ChangePasswordActivity.this, "Password reset failed: " + updateTask.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } else {
-                    Toast.makeText(ChangePasswordActivity.this, "Password reset failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChangePasswordActivity.this, "Reauthentication failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         } else {

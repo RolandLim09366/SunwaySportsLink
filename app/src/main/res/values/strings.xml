@@ -33,6 +33,8 @@
     <string name="create_new_password">Create New Password</string>
     <string name="create_new_password_desc">Your password must be different from previous used passwords.</string>
     <string name="password">Password</string>
+    <string name="new_password">New Password</string>
+    <string name="current_password">Current Password</string>
     <string name="password_hint">Must be at least 8 characters.</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="confirm_password_hint">Both password must be match.</string>
