@@ -15,19 +15,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sunwaysportslink.R;
+import com.example.sunwaysportslink.firebase.FirebaseService;
 import com.example.sunwaysportslink.ui.home.HomeActivity;
 import com.example.sunwaysportslink.ui.register.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText emailTextView, passwordTextView;
     private TextView enterTextView, signUpTextView, forgotPasswordTextView;
     private ProgressBar progressbar;
-    private FirebaseAuth mAuth;
+    private FirebaseService firebaseService;
 
     public static void startIntent(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -38,8 +38,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // taking instance of FirebaseAuth
-        mAuth = FirebaseAuth.getInstance();
+
+        // Initialize FirebaseService singleton
+        firebaseService = FirebaseService.getInstance();
 
         // initialising all views through id defined above
         emailTextView = findViewById(R.id.email);
@@ -102,30 +103,32 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // signin existing user
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        // Log in the user with Firebase Auth
+        firebaseService.getAuth().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "Login successful!!", Toast.LENGTH_LONG).show();
 
-                    // hide the progress bar
-                    progressbar.setVisibility(View.GONE);
-
-                    // if sign-in is successful
-                    // intent to home activity
-                    HomeActivity.startIntent(LoginActivity.this);
+                    // Check if the email is verified
+                    if (firebaseService.getAuth().getCurrentUser().isEmailVerified()) {
+                        // Proceed to the main activity or home screen
+                        Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
+                        HomeActivity.startIntent(LoginActivity.this);
+                        // Navigate to the main activity (e.g., MainActivity.startIntent(LoginActivity.this))
+                    } else {
+                        // Sign out the user if email is not verified
+                        showToastAndHideProgress("Please verify your email before logging in.");
+                    }
                 } else {
-
-                    // sign-in failed
-                    String errorMessage = task.getException().getMessage();
-                    Toast.makeText(getApplicationContext(), "Login failed!!" + errorMessage, Toast.LENGTH_LONG).show();
-
-                    // hide the progress bar
-                    progressbar.setVisibility(View.GONE);
+                    showToastAndHideProgress("Login failed! Please check your credentials.");
                 }
             }
         });
+    }
+
+    private void showToastAndHideProgress(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        progressbar.setVisibility(View.GONE);
     }
 }
 
