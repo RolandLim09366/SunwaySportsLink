@@ -54,5 +54,8 @@
     <string name="event_type">EVENT TYPE</string>
     <string name="event_cancelation"><![CDATA[Event Cancellations and Changes: Events may be subject to changes in timing, venue, or cancellation due to unforeseen circumstances, including weather conditions. Participants will be notified via the platform or contact details provided during registration.]]></string>
     <string name="personal_responsibility">Personal Responsibility: By joining any event, participants acknowledge that they are participating at their own risk. The event organizers and the platform are not liable for any injuries, damages, or losses sustained during the event.</string>
+    <string name="join_event">JOIN EVENT</string>
+    <string name="quit_event">EVENT JOINED! CLICK HERE TO QUIT!</string>
+    <string name="my_events">My Events</string>
 
 </resources>
