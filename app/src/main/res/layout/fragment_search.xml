@@ -38,7 +38,7 @@
         android:id="@+id/ic_blue_search"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginLeft="-20dp"
+        android:layout_marginLeft="-28dp"
         android:elevation="6dp"
         android:src="@drawable/ic_blue_search"
         app:layout_constraintBottom_toBottomOf="@id/et_search_bar"
@@ -56,8 +56,23 @@
         android:drawablePadding="8dp"
         android:paddingHorizontal="20dp"
         android:text="@string/filters"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_search_bar" />
+
+    <TextView
+        android:id="@+id/btnClearFilter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/bg_btn_register"
+        android:gravity="center"
+        android:text="Clear"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/tv_sort"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_filter" />
 
     <TextView
         android:id="@+id/tv_sort"
@@ -70,6 +85,7 @@
         android:drawablePadding="8dp"
         android:paddingHorizontal="20dp"
         android:text="@string/sort_by"
+        android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/tv_filter"
         app:layout_constraintTop_toTopOf="@+id/tv_filter" />
 
