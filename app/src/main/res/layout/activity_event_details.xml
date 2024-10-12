@@ -38,7 +38,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Basketball Casual Play"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -49,7 +48,6 @@
         android:id="@+id/created_by"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Created by Roland"
         android:textStyle="italic"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -67,7 +65,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
             android:orientation="vertical">
 
             <TextView
@@ -75,10 +73,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/ic_venue"
                 android:drawablePadding="8dp"
-                android:text="Sunway Basketball Court Half A"
                 android:textStyle="bold"
+                app:drawableLeftCompat="@drawable/ic_venue"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/created_by" />
 
@@ -87,10 +84,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/ic_date"
                 android:drawablePadding="8dp"
-                android:text="Monday - 10/10/2024"
                 android:textStyle="bold"
+                app:drawableLeftCompat="@drawable/ic_date"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_venue" />
 
@@ -99,10 +95,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/ic_time"
                 android:drawablePadding="8dp"
-                android:text="6:00 p.m. - 8:00 p.m."
                 android:textStyle="bold"
+                app:drawableLeftCompat="@drawable/ic_time"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_date" />
 
@@ -111,10 +106,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="8dp"
-                android:drawableLeft="@drawable/ic_participant"
                 android:drawablePadding="8dp"
-                android:text="2/10"
                 android:textStyle="bold"
+                app:drawableLeftCompat="@drawable/ic_participant"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_time" />
 
@@ -152,12 +146,24 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_event_info_1" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_create_event"
+        android:id="@+id/btn_join_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_btn_register"
-        android:text="JOIN EVENT"
+        android:text="@string/join_event"
         android:textColor="@color/white"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_quit_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_quit_btn"
+        android:text="@string/quit_event"
+        android:textColor="@color/white"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 

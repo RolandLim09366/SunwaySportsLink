@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private TextView tvParticipant;
     private FirebaseService firebaseService;
+    private AppCompatButton btnJoinEvent, btnQuitEvent;
 
     public static void startIntent(Context context, Event event) {
         Intent intent = new Intent(context, EventDetailsActivity.class);
@@ -100,8 +102,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
         firebaseService = FirebaseService.getInstance();
 
-        AppCompatButton btnJoinEvent = findViewById(R.id.btn_create_event);
+        btnJoinEvent = findViewById(R.id.btn_join_event);
+        btnQuitEvent = findViewById(R.id.btn_quit_event);
         btnJoinEvent.setOnClickListener(v -> joinEvent(event));
+        btnQuitEvent.setOnClickListener(v -> quitEvent(event));
 
         FirebaseService firebaseService = FirebaseService.getInstance();
         FirebaseUser currentUser = firebaseService.getAuth().getCurrentUser();
@@ -120,17 +124,14 @@ public class EventDetailsActivity extends AppCompatActivity {
                     // Check if the user's ID is in the list
                     if (joinedUsers != null && joinedUsers.contains(userId)) {
                         // User has already joined the event
-                        btnJoinEvent.setText("Event Joined");
-                        btnJoinEvent.setEnabled(false);  // Optionally disable the button
+                        btnJoinEvent.setVisibility(View.GONE);
+                        btnQuitEvent.setVisibility(View.VISIBLE);  // Show Quit Event button
+                        btnQuitEvent.setEnabled(true);
                     } else {
                         // User has not joined the event
-                        btnJoinEvent.setText("Join Event");
-                        btnJoinEvent.setEnabled(true);   // Ensure the button is enabled
+                        btnJoinEvent.setVisibility(View.VISIBLE);
+                        btnQuitEvent.setVisibility(View.GONE);
                     }
-                } else {
-                    // If snapshot doesn't exist, it means there are no joined users yet
-                    btnJoinEvent.setText("Join Event");
-                    btnJoinEvent.setEnabled(true);  // Allow the user to join
                 }
             }
 
@@ -142,21 +143,89 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
     }
 
-    //     Method to handle user joining an event
+    private void quitEvent(Event event) {
+        FirebaseUser currentUser = firebaseService.getAuth().getCurrentUser();
+        String userId = currentUser.getUid();
+
+        DatabaseReference eventRef = firebaseService.getEventsRef().child(event.getEventKey());
+        eventRef.child("joinedUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<String> joinedUsers = (ArrayList<String>) snapshot.getValue();
+                if (joinedUsers != null && joinedUsers.contains(userId)) {
+                    joinedUsers.remove(userId);
+                    eventRef.child("joinedUsers").setValue(joinedUsers).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(EventDetailsActivity.this, "You have left the event.", Toast.LENGTH_SHORT).show();
+                            // Update UI
+                            btnJoinEvent.setVisibility(View.VISIBLE);
+                            btnQuitEvent.setVisibility(View.GONE);
+
+                            // Update the participants count
+                            String updatedParticipants = String.valueOf(Integer.parseInt(event.getCurrentParticipants()) - 1);
+                            event.setCurrentParticipants(updatedParticipants);
+                            tvParticipant.setText(updatedParticipants + "/" + event.getParticipantLimit());
+                        } else {
+                            Toast.makeText(EventDetailsActivity.this, "Failed to quit the event. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FirebaseError", error.getMessage());
+            }
+        });
+    }
+
+    // Method to handle user joining an event
     private void joinEvent(Event event) {
         // Check if the event has already reached the participant limit
         if (Integer.parseInt(event.getCurrentParticipants()) < Integer.parseInt(event.getParticipantLimit())) {
-            String updatedParticipants = String.valueOf(Integer.parseInt(event.getCurrentParticipants()) + 1);
+            // Get the current user ID
+            FirebaseUser currentUser = firebaseService.getAuth().getCurrentUser();
+            String userId = currentUser.getUid();
 
-            // Update the Firebase database using FirebaseService
-            firebaseService.getEventsRef().child(event.getEventKey()).child("currentParticipants").setValue(updatedParticipants).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    // Update the local event object and UI
-                    event.setCurrentParticipants(updatedParticipants);
-                    tvParticipant.setText(updatedParticipants + "/" + event.getParticipantLimit());
-                    Toast.makeText(EventDetailsActivity.this, "Successfully joined the event!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(EventDetailsActivity.this, "Failed to join the event. Please try again.", Toast.LENGTH_SHORT).show();
+            DatabaseReference eventRef = firebaseService.getEventsRef().child(event.getEventKey());
+
+            // Add the user's ID to the joinedUsers list
+            eventRef.child("joinedUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    ArrayList<String> joinedUsers = (ArrayList<String>) snapshot.getValue();
+
+                    if (joinedUsers == null) {
+                        joinedUsers = new ArrayList<>();
+                    }
+
+                    // Add the user ID to the list
+                    if (!joinedUsers.contains(userId)) {
+                        joinedUsers.add(userId);
+                        eventRef.child("joinedUsers").setValue(joinedUsers).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // Update current participants
+                                String updatedParticipants = String.valueOf(Integer.parseInt(event.getCurrentParticipants()) + 1);
+                                eventRef.child("currentParticipants").setValue(updatedParticipants).addOnCompleteListener(participantTask -> {
+                                    if (participantTask.isSuccessful()) {
+                                        // Update the local event object and UI
+                                        event.setCurrentParticipants(updatedParticipants);
+                                        tvParticipant.setText(updatedParticipants + "/" + event.getParticipantLimit());
+                                        Toast.makeText(EventDetailsActivity.this, "Successfully joined the event!", Toast.LENGTH_SHORT).show();
+                                        btnJoinEvent.setVisibility(View.GONE);
+                                        btnQuitEvent.setVisibility(View.VISIBLE);
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(EventDetailsActivity.this, "Failed to join the event. Please try again.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("FirebaseError", error.getMessage());
                 }
             });
         } else {
