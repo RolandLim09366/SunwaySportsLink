@@ -2,9 +2,7 @@ package com.example.sunwaysportslink.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Event implements Serializable {
     private String title;
@@ -18,7 +16,6 @@ public class Event implements Serializable {
     private String currentParticipants;
     private String eventKey;
     private List<String> joinedUsers; // List to store joined users' UIDs
-
 
     // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     public Event() {
@@ -37,6 +34,7 @@ public class Event implements Serializable {
         this.joinedUsers = new ArrayList<>(); // Initialize the list
     }
 
+    // Getters
     public String getTitle() {
         return title;
     }
@@ -69,10 +67,6 @@ public class Event implements Serializable {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
     public String getCurrentParticipants() {
         return currentParticipants;
     }
@@ -81,23 +75,54 @@ public class Event implements Serializable {
         return eventKey;
     }
 
+    public List<String> getJoinedUsers() {
+        return joinedUsers;
+    }
+
+    // Setters
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setParticipantLimit(String participantLimit) {
+        this.participantLimit = participantLimit;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public void setCurrentParticipants(String currentParticipants) {
+        this.currentParticipants = currentParticipants;
+    }
+
+    public void setJoinedUsers(List<String> joinedUsers) {
+        this.joinedUsers = joinedUsers;
+    }
+
     public void setEventKey(String eventKey) {
         this.eventKey = eventKey;
     }
 
-    public void setCurrentParticipants(String updatedParticipants) {
-        this.currentParticipants = updatedParticipants;
-    }
-
-    // Method to add a user to the joinedUsers list
     public void addJoinedUser(String userId) {
         if (!joinedUsers.contains(userId)) { // Ensure no duplicates
             joinedUsers.add(userId);
         }
-
-    }
-    // Getter for the joinedUsers list
-    public List<String> getJoinedUsers() {
-        return joinedUsers;
     }
 }
