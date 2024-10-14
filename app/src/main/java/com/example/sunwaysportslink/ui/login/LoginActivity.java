@@ -110,15 +110,15 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
 
                     // Check if the email is verified
-                    if (firebaseService.getAuth().getCurrentUser().isEmailVerified()) {
+//                    if (firebaseService.getAuth().getCurrentUser().isEmailVerified()) {
                         // Proceed to the main activity or home screen
                         Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
                         HomeActivity.startIntent(LoginActivity.this);
                         // Navigate to the main activity (e.g., MainActivity.startIntent(LoginActivity.this))
-                    } else {
-                        // Sign out the user if email is not verified
-                        showToastAndHideProgress("Please verify your email before logging in.");
-                    }
+//                    } else {
+//                        // Sign out the user if email is not verified
+//                        showToastAndHideProgress("Please verify your email before logging in.");
+//                    }
                 } else {
                     showToastAndHideProgress("Login failed! Please check your credentials.");
                 }

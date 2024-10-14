@@ -13,8 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.ui.chat.ChatFragment;
-import com.example.sunwaysportslink.ui.event.EventFragment;
-import com.example.sunwaysportslink.ui.login.LoginActivity;
+import com.example.sunwaysportslink.ui.event.MyEventFragment;
 import com.example.sunwaysportslink.ui.search.SearchFragment;
 import com.example.sunwaysportslink.ui.setting.SettingFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -54,7 +53,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     HomeFragment firstFragment = new HomeFragment();
     SearchFragment secondFragment = new SearchFragment();
     ChatFragment thirdFragment = new ChatFragment();
-    EventFragment fourthFragment = new EventFragment();
+    MyEventFragment fourthFragment = new MyEventFragment();
 
     SettingFragment fifthFragment = new SettingFragment();
 

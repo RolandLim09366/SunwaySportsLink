@@ -47,7 +47,7 @@ public class SearchFragment extends Fragment {
     private List<Event> displayedList; // This will keep track of the currently displayed list
 
     private enum SortOption {
-        NULL, DATE_ASC, DATE_DESC, NAME_ASC, NAME_DESC
+        DATE_ASC, DATE_DESC, NAME_ASC, NAME_DESC
     }
 
     private SortOption currentSortOption = SortOption.DATE_ASC;
@@ -97,7 +97,6 @@ public class SearchFragment extends Fragment {
         displayedList = new ArrayList<>();  // Initialize displayedList
         eventAdapter = new EventAdapter(displayedList, this::onEventClick);  // Pass the click listener
         recyclerView.setAdapter(eventAdapter);
-
 
         firebaseService = FirebaseService.getInstance();
 
@@ -361,23 +360,29 @@ public class SearchFragment extends Fragment {
         firebaseService.getEventsRef().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                eventList.clear(); // Clear list to avoid duplicates
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Event event = snapshot.getValue(Event.class);
-                    if (event != null) {
-                        eventList.add(event); // Add event to list
+                if (dataSnapshot.exists()) {  // Only proceed if there is data
+                    eventList.clear(); // Clear the list to avoid duplicates
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Event event = snapshot.getValue(Event.class);
+                        if (event != null) {
+                            eventList.add(event); // Add event to the list
+                        }
                     }
-                }
 
-                // Show "No Events" message if list is empty
-                if (eventList.isEmpty()) {
-                    binding.tvNoEvents.setVisibility(View.VISIBLE);
-                } else {
-                    binding.tvNoEvents.setVisibility(View.GONE);
+                    // Check if the eventList is empty and show the "No Events" text accordingly
+                    if (eventList.isEmpty()) {
+                        binding.tvNoEvents.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.tvNoEvents.setVisibility(View.GONE);
+                    }
+
+                    // Clear the displayedList and then add all events from eventList
+                    displayedList.clear();
+                    displayedList.addAll(eventList);
+
+                    // Notify the adapter that data has changed
+                    eventAdapter.updateEvents(displayedList);
                 }
-                displayedList.clear();
-                displayedList.addAll(eventList);
-                eventAdapter.notifyDataSetChanged(); // Notify adapter to refresh RecyclerView
             }
 
             @Override
@@ -387,8 +392,14 @@ public class SearchFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchEventsFromFirebase(); // Reload the events when the fragment becomes visible
+    }
+
     private void onEventClick(Event event) {
         // Navigate to the EventDetailsActivity
-        EventDetailsActivity.startIntent(getContext(), event);  // Start the EventDetailsActivity
+        EventDetailsActivity.startIntent(getContext(), event, false);  // Start the EventDetailsActivity
     }
 }
