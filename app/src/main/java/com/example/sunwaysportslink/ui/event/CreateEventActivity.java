@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.firebase.FirebaseService;
 import com.example.sunwaysportslink.model.Event;
+import com.example.sunwaysportslink.model.User;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
@@ -92,26 +93,47 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Get the current user (organizer)
         FirebaseUser currentUser = firebaseService.getAuth().getCurrentUser();
-        String organizerName = currentUser.getEmail();
+        String userId = currentUser.getUid();
 
-        // Create an Event object
-        Event event = new Event(eventTitle, eventDate, eventVenue, eventStartTime, eventEndTime, participantLimit, eventDetails, organizerName);
-        event.addJoinedUser(currentUser.getUid()); // Use the user ID instead of email
-
-        Log.d("CreateEventActivity", "Joined Users: " + event.getJoinedUsers().toString()); // Check if the list contains the user
-
-        // Push the event data to the Firebase database
-        String eventKey = firebaseService.getEventsRef().push().getKey();  // Retrieve the unique event key from Firebase
-        event.setEventKey(eventKey);
-
-        firebaseService.getEventsRef().child(eventKey).setValue(event).addOnCompleteListener(task -> {
+        // Retrieve the username from Firebase based on the userId
+        firebaseService.getUserRef(userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                // Success message
-                Toast.makeText(CreateEventActivity.this, "Event created successfully!", Toast.LENGTH_SHORT).show();
-                resetInputFields(); // Clear all fields after successful event creation
+                // Fetch the User object from the database
+                String organizerName;
+                User user = task.getResult().getValue(User.class);
+                if (user != null) {
+                    if (user.getUsername() != null) {
+                        organizerName = user.getUsername(); // Use the username instead of email
+                    } else {
+                        organizerName = user.getEmail();
+                    }
+
+                    // Create an Event object
+                    Event event = new Event(eventTitle, eventDate, eventVenue, eventStartTime, eventEndTime, participantLimit, eventDetails, organizerName);
+                    event.addJoinedUser(userId); // Use the user ID instead of email
+
+                    Log.d("CreateEventActivity", "Joined Users: " + event.getJoinedUsers().toString()); // Check if the list contains the user
+
+                    // Push the event data to the Firebase database
+                    String eventKey = firebaseService.getEventsRef().push().getKey();  // Retrieve the unique event key from Firebase
+                    event.setEventKey(eventKey);
+
+                    firebaseService.getEventsRef().child(eventKey).setValue(event).addOnCompleteListener(eventTask -> {
+                        if (eventTask.isSuccessful()) {
+                            // Success message
+                            Toast.makeText(CreateEventActivity.this, "Event created successfully!", Toast.LENGTH_SHORT).show();
+                            resetInputFields(); // Clear all fields after successful event creation
+                        } else {
+                            // Error message
+                            Toast.makeText(CreateEventActivity.this, "Failed to create event. Try again!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(CreateEventActivity.this, "Failed to retrieve user information", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                // Error message
-                Toast.makeText(CreateEventActivity.this, "Failed to create event. Try again!", Toast.LENGTH_SHORT).show();
+                // Handle failure to retrieve user data
+                Toast.makeText(CreateEventActivity.this, "Error fetching user data", Toast.LENGTH_SHORT).show();
             }
         });
     }

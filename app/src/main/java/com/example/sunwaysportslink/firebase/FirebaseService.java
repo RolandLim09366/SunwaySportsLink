@@ -50,6 +50,9 @@ public class FirebaseService {
         return getReference("users").child(userId);
     }
 
+    public DatabaseReference getUserRef() {
+        return getReference("users");
+    }
     public DatabaseReference getEventsRef() {
         return getReference("events");
     }
