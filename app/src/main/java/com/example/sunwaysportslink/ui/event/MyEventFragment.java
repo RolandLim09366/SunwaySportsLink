@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sunwaysportslink.databinding.FragmentMyEventBinding;
 import com.example.sunwaysportslink.firebase.FirebaseService;
 import com.example.sunwaysportslink.model.Event;
+import com.example.sunwaysportslink.model.User;
 import com.example.sunwaysportslink.ui.search.EventDetailsActivity;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -62,28 +64,45 @@ public class MyEventFragment extends Fragment {
     private void loadMyEvents() {
         FirebaseService firebaseService = FirebaseService.getInstance();
         FirebaseUser currentUser = firebaseService.getAuth().getCurrentUser();
-        String userId = currentUser.getEmail();
+        String userId = currentUser.getUid();
 
-        firebaseService.getEventsRef().orderByChild("createdBy").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                myEventsList.clear(); // Clear previous data
-                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    Event event = eventSnapshot.getValue(Event.class);
-                    myEventsList.add(event);
-                }
-                // Check if the event list is empty
-                if (myEventsList.isEmpty()) {
-                    tvNoEvents.setVisibility(View.VISIBLE); // Show "No Events" text
+        firebaseService.getUserRef(userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Fetch the User object from the database
+                String organizerName;
+                User user = task.getResult().getValue(User.class);
+                if (user != null) {
+                    if (user.getUsername() != null) {
+                        organizerName = user.getUsername(); // Use the username instead of email
+                    } else {
+                        organizerName = user.getEmail();
+                    }
+                    firebaseService.getEventsRef().orderByChild("createdBy").equalTo(organizerName).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            myEventsList.clear(); // Clear previous data
+                            for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                                Event event = eventSnapshot.getValue(Event.class);
+                                myEventsList.add(event);
+                            }
+                            // Check if the event list is empty
+                            if (myEventsList.isEmpty()) {
+                                tvNoEvents.setVisibility(View.VISIBLE); // Show "No Events" text
+                            } else {
+                                tvNoEvents.setVisibility(View.GONE); // Hide "No Events" text
+                            }
+                            myEventAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            // Handle possible errors
+                        }
+                    });
                 } else {
-                    tvNoEvents.setVisibility(View.GONE); // Hide "No Events" text
+                    // Handle failure to retrieve user data
+                    Toast.makeText(getContext(), "Error fetching user data", Toast.LENGTH_SHORT).show(); // Use getContext() here
                 }
-                myEventAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle possible errors
             }
         });
     }

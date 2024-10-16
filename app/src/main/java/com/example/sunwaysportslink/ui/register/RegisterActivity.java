@@ -21,6 +21,7 @@ import com.example.sunwaysportslink.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -91,7 +92,18 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    String userId = firebaseService.getAuth().getCurrentUser().getUid();
+                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (task.isSuccessful()) {
+                                String token = task.getResult();
 
+                                // Store the FCM token in Firebase under the user's profile
+                                firebaseService.getUserRef(userId).child("fcmToken").setValue(token);
+                            }
+                        }
+                    });
                     // Send email verification
                     firebaseService.getAuth().getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override

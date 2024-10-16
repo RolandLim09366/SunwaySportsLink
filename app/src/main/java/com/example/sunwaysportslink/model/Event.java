@@ -3,6 +3,7 @@ package com.example.sunwaysportslink.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Event implements Serializable {
     private String title;
@@ -16,6 +17,8 @@ public class Event implements Serializable {
     private String currentParticipants;
     private String eventKey;
     private List<String> joinedUsers; // List to store joined users' UIDs
+    private Map<String, String> joinedUsersTokens; // Change from List<String> to Map<String, String>
+
 
     // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     public Event() {
@@ -124,5 +127,12 @@ public class Event implements Serializable {
         if (!joinedUsers.contains(userId)) { // Ensure no duplicates
             joinedUsers.add(userId);
         }
+    }
+    public Map<String, String> getJoinedUsersTokens() {
+        return joinedUsersTokens;
+    }
+
+    public void setJoinedUsersTokens(Map<String, String> joinedUsersTokens) {
+        this.joinedUsersTokens = joinedUsersTokens;
     }
 }

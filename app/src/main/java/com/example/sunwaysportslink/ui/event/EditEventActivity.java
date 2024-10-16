@@ -1,6 +1,8 @@
 package com.example.sunwaysportslink.ui.event;
 
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 
 import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.firebase.FirebaseService;
@@ -27,7 +30,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
 public class EditEventActivity extends AppCompatActivity {
 
@@ -208,6 +214,7 @@ public class EditEventActivity extends AppCompatActivity {
         DatabaseReference eventRef = firebaseService.getEventsRef().child(event.getEventKey());
         eventRef.setValue(event).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                sendPushNotificationToJoinedUsers(event);
                 // Return the updated event to EventDetailsActivity
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("updatedEvent", event);
@@ -219,6 +226,42 @@ public class EditEventActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void sendPushNotificationToJoinedUsers(Event event) {
+        // Assuming you store FCM tokens in joined users
+        List<String> tokens = getJoinedUserTokensAsList(event.getJoinedUsersTokens());
+
+        if (tokens != null && !tokens.isEmpty()) {
+            for (String token : tokens) {
+                // Simulate sending a notification to users who joined the event
+                // In a real case, you would send a message to the FCM service
+                showLocalNotification(event, token);
+            }
+        }
+    }
+
+    private List<String> getJoinedUserTokensAsList(Map<String, String> joinedUsersTokens) {
+        return new ArrayList<>(joinedUsersTokens.values());
+    }
+
+    private void showLocalNotification(Event event, String token) {
+        // Build a notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default").setSmallIcon(R.drawable.ic_notification) // Use an appropriate notification icon
+                .setContentTitle("Event Updated: " + event.getTitle()).setContentText("New Date: " + event.getDate() + " Time: " + event.getStartTime()).setPriority(NotificationCompat.PRIORITY_HIGH).setAutoCancel(true);
+
+        // Get the NotificationManager service
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // For Android Oreo and above, set up the notification channel
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("default", "Event Updates", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        // Issue the notification (use token or some other unique ID for the notification ID)
+        notificationManager.notify(token.hashCode(), builder.build());
+    }
+
 
     // Helper method to get the index of a spinner item (assuming values are strings)
     private int getIndexForSpinner(Spinner spinner, String value) {

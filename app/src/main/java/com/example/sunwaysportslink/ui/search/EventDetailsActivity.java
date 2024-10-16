@@ -18,12 +18,14 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.firebase.FirebaseService;
 import com.example.sunwaysportslink.model.Event;
+import com.example.sunwaysportslink.model.User;
 import com.example.sunwaysportslink.ui.event.EditEventActivity;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,6 +39,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private FirebaseService firebaseService;
     private AppCompatButton btnJoinEvent, btnQuitEvent;
     private ImageView ivEventImage, editIcon;
+    private String organizerName;
 
     public static void startIntent(Context context, Event event, boolean isCreator) {
         Intent intent = new Intent(context, EventDetailsActivity.class);
@@ -125,8 +128,25 @@ public class EventDetailsActivity extends AppCompatActivity {
         FirebaseUser currentUser = firebaseService.getAuth().getCurrentUser();
         String userId = currentUser.getUid();
 
+        firebaseService.getUserRef(userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Fetch the User object from the database
+                User user = task.getResult().getValue(User.class);
+                if (user != null) {
+                    if (user.getUsername() != null) {
+                        organizerName = user.getUsername(); // Use the username instead of email
+                    } else {
+                        organizerName = user.getEmail();
+                    }
+                }
+            } else {
+                // Handle failure to retrieve user data
+                Toast.makeText(EventDetailsActivity.this, "Error fetching user data", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // Check if the user is the organizer
-        if (event.getCreatedBy().equals(currentUser.getEmail())) {
+        if (event.getCreatedBy().equals(organizerName)) {
             btnJoinEvent.setText("You are the Organizer");
             btnJoinEvent.setEnabled(false);  // Disable the button
             btnQuitEvent.setVisibility(View.GONE);  // Hide the Quit button
@@ -207,7 +227,6 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
 
-    // Method to handle user joining an event
     private void joinEvent(Event event) {
         // Check if the event has already reached the participant limit
         if (Integer.parseInt(event.getCurrentParticipants()) < Integer.parseInt(event.getParticipantLimit())) {
@@ -232,16 +251,28 @@ public class EventDetailsActivity extends AppCompatActivity {
                         joinedUsers.add(userId);
                         eventRef.child("joinedUsers").setValue(joinedUsers).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                // Update current participants
-                                String updatedParticipants = String.valueOf(Integer.parseInt(event.getCurrentParticipants()) + 1);
-                                eventRef.child("currentParticipants").setValue(updatedParticipants).addOnCompleteListener(participantTask -> {
-                                    if (participantTask.isSuccessful()) {
-                                        // Update the local event object and UI
-                                        event.setCurrentParticipants(updatedParticipants);
-                                        tvParticipant.setText(updatedParticipants + "/" + event.getParticipantLimit());
-                                        Toast.makeText(EventDetailsActivity.this, "Successfully joined the event!", Toast.LENGTH_SHORT).show();
-                                        btnJoinEvent.setVisibility(View.GONE);
-                                        btnQuitEvent.setVisibility(View.VISIBLE);
+                                // Get the FCM token of the current user
+                                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(tokenTask -> {
+                                    if (tokenTask.isSuccessful()) {
+                                        String fcmToken = tokenTask.getResult();
+
+                                        // Store the FCM token in the joinedUsersTokens node
+                                        eventRef.child("joinedUsersTokens").child(userId).setValue(fcmToken);
+
+                                        // Update current participants
+                                        String updatedParticipants = String.valueOf(Integer.parseInt(event.getCurrentParticipants()) + 1);
+                                        eventRef.child("currentParticipants").setValue(updatedParticipants).addOnCompleteListener(participantTask -> {
+                                            if (participantTask.isSuccessful()) {
+                                                // Update the local event object and UI
+                                                event.setCurrentParticipants(updatedParticipants);
+                                                tvParticipant.setText(updatedParticipants + "/" + event.getParticipantLimit());
+                                                Toast.makeText(EventDetailsActivity.this, "Successfully joined the event!", Toast.LENGTH_SHORT).show();
+                                                btnJoinEvent.setVisibility(View.GONE);
+                                                btnQuitEvent.setVisibility(View.VISIBLE);
+                                            }
+                                        });
+                                    } else {
+                                        Toast.makeText(EventDetailsActivity.this, "Failed to retrieve FCM token.", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             } else {
