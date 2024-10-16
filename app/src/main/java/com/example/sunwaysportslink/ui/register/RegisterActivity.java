@@ -101,6 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 // Get user ID and save user details to the database
                                 String userId = firebaseService.getAuth().getCurrentUser().getUid();
                                 User newUser = new User(email);
+                                newUser.setUserId(userId);
                                 firebaseService.getUserRef(userId).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.firebase.FirebaseService;
+import com.example.sunwaysportslink.ui.admin.AdminHomeActivity;
 import com.example.sunwaysportslink.ui.home.HomeActivity;
 import com.example.sunwaysportslink.ui.register.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -111,10 +112,17 @@ public class LoginActivity extends AppCompatActivity {
 
                     // Check if the email is verified
 //                    if (firebaseService.getAuth().getCurrentUser().isEmailVerified()) {
-                        // Proceed to the main activity or home screen
+                    // Proceed to the main activity or home screen
+                    if (email.equals("admin123@gmail.com") && password.equals("123456")) {
+                        // Admin login
+                        Toast.makeText(getApplicationContext(), "Admin login successful!", Toast.LENGTH_LONG).show();
+                        AdminHomeActivity.startIntent(LoginActivity.this);
+                    } else {
+                        // Normal user login
                         Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
                         HomeActivity.startIntent(LoginActivity.this);
-                        // Navigate to the main activity (e.g., MainActivity.startIntent(LoginActivity.this))
+                    }
+                    // Navigate to the main activity (e.g., MainActivity.startIntent(LoginActivity.this))
 //                    } else {
 //                        // Sign out the user if email is not verified
 //                        showToastAndHideProgress("Please verify your email before logging in.");
@@ -123,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
                     showToastAndHideProgress("Login failed! Please check your credentials.");
                 }
             }
+
         });
     }
 
