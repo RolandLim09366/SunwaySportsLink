@@ -6,6 +6,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -45,6 +46,8 @@ public class SearchFragment extends Fragment {
     private FirebaseService firebaseService;
     private FragmentSearchBinding binding;
     private List<Event> displayedList; // This will keep track of the currently displayed list
+    private ProgressBar progressBar; // Add ProgressBar reference
+
 
     private enum SortOption {
         DATE_ASC, DATE_DESC, NAME_ASC, NAME_DESC
@@ -97,6 +100,8 @@ public class SearchFragment extends Fragment {
         displayedList = new ArrayList<>();  // Initialize displayedList
         eventAdapter = new EventAdapter(displayedList, this::onEventClick);  // Pass the click listener
         recyclerView.setAdapter(eventAdapter);
+
+        progressBar = binding.progressBar;
 
         firebaseService = FirebaseService.getInstance();
 
@@ -357,9 +362,14 @@ public class SearchFragment extends Fragment {
     }
 
     private void fetchEventsFromFirebase() {
+
+        progressBar.setVisibility(View.VISIBLE);
         firebaseService.getEventsRef().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                progressBar.setVisibility(View.GONE);
+
                 if (dataSnapshot.exists()) {  // Only proceed if there is data
                     eventList.clear(); // Clear the list to avoid duplicates
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -388,6 +398,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Handle database error
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
