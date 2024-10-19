@@ -13,7 +13,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
         android:padding="8dp">
@@ -24,8 +24,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:padding="4dp"
-            android:text="USERNAME" />
+            android:text="@string/username" />
 
 
         <!-- Users -->
@@ -36,7 +37,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="4dp"
-            android:text="GENDER" />
+            android:text="@string/gender" />
 
         <TextView
             android:id="@+id/tv_organizer"
@@ -45,7 +46,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="4dp"
-            android:text="EMAIL" />
+            android:text="@string/email" />
 
         <TextView
             android:id="@+id/tv_event_location"
@@ -54,7 +55,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="4dp"
-            android:text="PHONE NUMBER" />
+            android:text="@string/phone_number" />
 
         <TextView
             android:id="@+id/tv_event_date"
@@ -63,7 +64,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="4dp"
-            android:text="LAST UPDATED  " />
+            android:text="@string/last_updated" />
 
         <TextView
             android:id="@+id/tv_delete"
@@ -72,11 +73,11 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="4dp"
-            android:text="DELETE" />
+            android:text="@string/delete" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_events"
+        android:id="@+id/recycler_view_users"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

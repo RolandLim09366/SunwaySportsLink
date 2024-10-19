@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -20,51 +20,34 @@
 
         <!-- Center Name -->
         <TextView
-            android:id="@+id/tv_event_type"
+            android:id="@+id/tv_news_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="@string/news" />
+
+        <!-- Center Name -->
+        <TextView
+            android:id="@+id/tv_news_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:padding="4dp"
-            android:text="@string/category" />
+            android:text="@string/title" />
 
 
         <!-- Users -->
         <TextView
-            android:id="@+id/tv_participant"
+            android:id="@+id/tv_news_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:gravity="center"
             android:padding="4dp"
-            android:text="@string/participants" />
-
-        <TextView
-            android:id="@+id/tv_organizer"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="4dp"
-            android:text="@string/organizer" />
-
-        <TextView
-            android:id="@+id/tv_event_location"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="4dp"
-            android:text="@string/location" />
-
-        <TextView
-            android:id="@+id/tv_event_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="4dp"
-            android:text="@string/date" />
+            android:text="@string/description" />
 
         <TextView
             android:id="@+id/tv_delete"
@@ -77,10 +60,20 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_events"
+        android:id="@+id/recycler_view_news"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="vertical" />
+
+    <!-- Add News Button -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_add_news"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_btn_register"
+        android:text="Add News"
+        android:textColor="@color/white" />
 
 </LinearLayout>

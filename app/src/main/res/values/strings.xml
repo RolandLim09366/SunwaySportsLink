@@ -57,5 +57,33 @@
     <string name="join_event">JOIN EVENT</string>
     <string name="quit_event">EVENT JOINED! CLICK HERE TO QUIT!</string>
     <string name="my_events">My Events</string>
+    <string name="news_title">News Title</string>
+    <string name="short_description_of_the_news_goes_here">Short description of the news goes here.</string>
+    <string name="delete">Delete</string>
+    <string name="sports_news">Sports News</string>
+    <string name="welcome_user">Welcome, User</string>
+    <string name="username">USERNAME</string>
+    <string name="gender">GENDER</string>
+    <string name="email">EMAIL</string>
+    <string name="phone_number">PHONE NUMBER</string>
+    <string name="last_updated">LAST UPDATED</string>
+    <string name="news">NEWS</string>
+    <string name="title">TITLE</string>
+    <string name="description">DESCRIPTION</string>
+    <string name="category">CATEGORY</string>
+    <string name="participants">PARTICIPANTS</string>
+    <string name="organizer">ORGANIZER</string>
+    <string name="location">LOCATION</string>
+    <string name="date">DATE</string>
+    <string name="admin_dashboard">Admin Dashboard</string>
+    <string name="manage_events">Manage Events</string>
+    <string name="manage_users">Manage Users</string>
+    <string name="manage_news">Manage News</string>
+    <string name="log_out">Log Out</string>
+    <string name="news_description">News Description</string>
+    <string name="create_news">Create News</string>
+    <string name="favourite_sports">FAVOURITE SPORTS</string>
+    <string name="save">SAVE</string>
+    <string name="settings">Settings</string>
 
 </resources>

@@ -30,6 +30,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         // Find the views
         CardView manageEventsCard = findViewById(R.id.card_manage_events);
         CardView manageUsersCard = findViewById(R.id.card_manage_users);
+        CardView manageNewsCard = findViewById(R.id.card_manage_news);
         CardView logOutCard = findViewById(R.id.log_out);
 
         // Set click listeners for the cards
@@ -41,6 +42,10 @@ public class AdminHomeActivity extends AppCompatActivity {
         manageUsersCard.setOnClickListener(v -> {
 //             Navigate to the user management screen
             ManageUsersActivity.startIntent(AdminHomeActivity.this);
+        });
+
+        manageNewsCard.setOnClickListener(v -> {
+            ManageNewsActivity.startIntent(AdminHomeActivity.this);
         });
 
         logOutCard.setOnClickListener(v -> {

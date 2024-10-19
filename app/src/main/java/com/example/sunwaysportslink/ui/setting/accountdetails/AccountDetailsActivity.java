@@ -12,8 +12,10 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -51,7 +53,7 @@ public class AccountDetailsActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSION = 100;
     private CircleImageView profileImage;
     private ImageView cameraIcon;
-
+    private Spinner spinnerFavouriteEvent;
 
     public static void startIntent(Context context) {
         Intent intent = new Intent(context, AccountDetailsActivity.class);
@@ -71,12 +73,14 @@ public class AccountDetailsActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.et_email);
         phoneEditText = findViewById(R.id.et_phone);
         genderEditText = findViewById(R.id.et_gender);
-        favouriteSportsEditText = findViewById(R.id.et_favourite_sports);
+        spinnerFavouriteEvent = findViewById(R.id.spinner_favourite_sports);
         profileImage = findViewById(R.id.profileImage);
         cameraIcon = findViewById(R.id.iv_camera);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        setUpSpinner();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // Enable the back arrow
@@ -201,7 +205,7 @@ public class AccountDetailsActivity extends AppCompatActivity {
         String updatedEmail = emailEditText.getText().toString();
         String updatedPhone = phoneEditText.getText().toString();
         String updatedGender = genderEditText.getText().toString();
-        String updatedFavouriteSports = favouriteSportsEditText.getText().toString();
+        String updatedFavouriteSports = spinnerFavouriteEvent.getSelectedItem().toString();
 
         // Create a HashMap to store the updated user details
         Map<String, Object> userDetails = new HashMap<>();
@@ -219,7 +223,7 @@ public class AccountDetailsActivity extends AppCompatActivity {
                 emailEditText.setEnabled(false);
                 phoneEditText.setEnabled(false);
                 genderEditText.setEnabled(false);
-                favouriteSportsEditText.setEnabled(false);
+                spinnerFavouriteEvent.setEnabled(false);
 
                 // Hide the Save Button
                 saveButton.setVisibility(View.GONE);
@@ -234,6 +238,11 @@ public class AccountDetailsActivity extends AppCompatActivity {
         });
     }
 
+    private void setUpSpinner() {
+        String[] eventTypes = {"Basketball", "Football", "Futsal", "Volleyball", "Tennis"};
+        spinnerFavouriteEvent.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypes));
+    }
+
     private void loadUserDetails() {
         firebaseService.getUserRef(userId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -244,7 +253,8 @@ public class AccountDetailsActivity extends AppCompatActivity {
                     emailEditText.setText(dataSnapshot.child("email").getValue(String.class));
                     phoneEditText.setText(dataSnapshot.child("phone").getValue(String.class));
                     genderEditText.setText(dataSnapshot.child("gender").getValue(String.class));
-                    favouriteSportsEditText.setText(dataSnapshot.child("favourite_sports").getValue(String.class));
+                    spinnerFavouriteEvent.setSelection(getIndexForSpinner(spinnerFavouriteEvent, dataSnapshot.child("favourite_sports").getValue(String.class)));  // Assuming 'title' refers to event type
+
 
                     // Load and display the profile image (if it exists)
                     String profileImageUrl = dataSnapshot.child("profileImageUrl").getValue(String.class);
@@ -266,6 +276,15 @@ public class AccountDetailsActivity extends AppCompatActivity {
                 // Handle database error
             }
         });
+    }
+
+    private int getIndexForSpinner(Spinner spinner, String value) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(value)) {
+                return i;
+            }
+        }
+        return 0;  // Default to first item if not found
     }
 
     @Override
@@ -293,7 +312,7 @@ public class AccountDetailsActivity extends AppCompatActivity {
         emailEditText.setEnabled(true);
         phoneEditText.setEnabled(true);
         genderEditText.setEnabled(true);
-        favouriteSportsEditText.setEnabled(true);
+        spinnerFavouriteEvent.setEnabled(true);
 
         // Make the Save Button visible
         saveButton.setVisibility(View.VISIBLE);

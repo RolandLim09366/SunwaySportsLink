@@ -8,7 +8,7 @@ public class User {
     private String phone; // Ensure this field is present and correctly named
     private String gender;
     private String userId;
-    private List<String> favoriteSports;
+    private String favourite_sports;
     private String lastOnlineTime; // New field for last online time
 
 
@@ -22,16 +22,16 @@ public class User {
         this.username = extractUsernameFromEmail(email); // Automatically generate username from email
         this.phone = null;  // Default to null, can be set later
         this.gender = null;  // Default to null, can be set later
-        this.favoriteSports = null;  // Default to null, can be set later
+        this.favourite_sports = null;  // Default to null, can be set later
     }
 
     // Constructor with all fields (when known)
-    public User(String email, String username, String phone, String gender, List<String> favoriteSports) {
+    public User(String email, String username, String phone, String gender, String favourite_sports) {
         this.email = email;
         this.username = username;
         this.phone = phone;
         this.gender = gender;
-        this.favoriteSports = favoriteSports;
+        this.favourite_sports = favourite_sports;
     }
 
     // Getters
@@ -56,8 +56,8 @@ public class User {
     }
 
 
-    public List<String> getFavoriteSports() {
-        return favoriteSports;
+    public String getFavourite_Sports() {
+        return favourite_sports;
     }
 
     // Setters
@@ -73,8 +73,8 @@ public class User {
         this.gender = gender;
     }
 
-    public void setFavoriteSports(List<String> favoriteSports) {
-        this.favoriteSports = favoriteSports;
+    public void setFavoriteSports(String favourite_sports) {
+        this.favourite_sports = favourite_sports;
     }
 
     public void setUserId(String userId) {
