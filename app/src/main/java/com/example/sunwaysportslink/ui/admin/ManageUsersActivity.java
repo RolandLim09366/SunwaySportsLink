@@ -37,7 +37,7 @@ public class ManageUsersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_users);
 
-        recyclerView = findViewById(R.id.recycler_view_events);
+        recyclerView = findViewById(R.id.recycler_view_users);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         userList = new ArrayList<>();
