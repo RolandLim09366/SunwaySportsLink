@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.firebase.FirebaseService;
 import com.example.sunwaysportslink.model.Event;
+import com.example.sunwaysportslink.model.User;
 import com.example.sunwaysportslink.ui.event.EditEventActivity;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +36,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private TextView tvParticipant, tvEventName, tvEventDate, tvEventVenue, tvTime, tvOrganizer;
     private FirebaseService firebaseService;
-    private AppCompatButton btnJoinEvent, btnQuitEvent;
+    private AppCompatButton btnJoinEvent, btnQuitEvent, btnDeleteEvent;
     private ImageView ivEventImage, editIcon;
 
     public static void startIntent(Context context, Event event, boolean isCreator) {
@@ -83,16 +84,20 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         ivEventImage = findViewById(R.id.iv_sports_banner);
         editIcon = findViewById(R.id.iv_edit);
+        btnDeleteEvent = findViewById(R.id.btn_cancel_event);
 
         // Show the edit icon only if the user is the creator
         if (isCreator) {
             editIcon.setVisibility(View.VISIBLE);
+            btnDeleteEvent.setVisibility(View.VISIBLE);  // Show delete button for the organizer
+            btnDeleteEvent.setOnClickListener(v -> deleteEvent(event));  // Handle delete action
             editIcon.setOnClickListener(v -> {
                 Intent intent = new Intent(EventDetailsActivity.this, EditEventActivity.class);
                 intent.putExtra("event", event); // Pass event to the edit activity
                 startActivityForResult(intent, 1); // Use startActivityForResult
             });
         } else {
+            btnDeleteEvent.setVisibility(View.GONE);  // Hide the delete button for non-creators
             editIcon.setVisibility(View.GONE); // Hide the edit icon for non-creators
         }
 
@@ -124,42 +129,63 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = firebaseService.getAuth().getCurrentUser();
         String userId = currentUser.getUid();
-
-        // Check if the user is the organizer
-        if (event.getCreatedBy().equals(currentUser.getEmail())) {
-            btnJoinEvent.setText("You are the Organizer");
-            btnJoinEvent.setEnabled(false);  // Disable the button
-            btnQuitEvent.setVisibility(View.GONE);  // Hide the Quit button
-        } else {
-            btnJoinEvent.setOnClickListener(v -> joinEvent(event));
-            btnQuitEvent.setOnClickListener(v -> quitEvent(event));
-
-            String eventId = event.getEventKey();
-            DatabaseReference eventRef = firebaseService.getEventsRef().child(eventId);
-            eventRef.child("joinedUsers").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        ArrayList<String> joinedUsers = (ArrayList<String>) snapshot.getValue();
-
-                        // Check if the user's ID is in the list
-                        if (joinedUsers != null && joinedUsers.contains(userId)) {
-                            btnJoinEvent.setVisibility(View.GONE);
-                            btnQuitEvent.setVisibility(View.VISIBLE);
-                            btnQuitEvent.setEnabled(true);
-                        } else {
-                            btnJoinEvent.setVisibility(View.VISIBLE);
-                            btnQuitEvent.setVisibility(View.GONE);
-                        }
+        // Fetch user's name or email from the Firebase Database
+        firebaseService.getUserRef(userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                User user = task.getResult().getValue(User.class);
+                if (user != null) {
+                    if (event.getCreatedBy().equals(user.getUsername())) {
+                        btnQuitEvent.setText("Organizer");
+                        btnQuitEvent.setEnabled(false);  // Disable the join button for the organizer
+                    }
+                    if (event.isExpired()) {
+                        btnJoinEvent.setText("Expired");
+                        btnJoinEvent.setEnabled(false);
+                        btnQuitEvent.setVisibility(View.GONE);  // Hide quit button since the event is expired
+                    } else {
+                        btnJoinEvent.setOnClickListener(v -> joinEvent(event));
+                        btnQuitEvent.setOnClickListener(v -> quitEvent(event));
                     }
                 }
+            }
+        });
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e("FirebaseError", error.getMessage());
+        String eventId = event.getEventKey();
+        DatabaseReference eventRef = firebaseService.getEventsRef().child(eventId);
+        eventRef.child("joinedUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    ArrayList<String> joinedUsers = (ArrayList<String>) snapshot.getValue();
+
+                    // Check if the user's ID is in the list
+                    if (joinedUsers != null && joinedUsers.contains(userId)) {
+                        btnJoinEvent.setVisibility(View.GONE);
+                        btnQuitEvent.setVisibility(View.VISIBLE);
+                        btnQuitEvent.setEnabled(true);
+                    } else {
+                        btnJoinEvent.setVisibility(View.VISIBLE);
+                        btnQuitEvent.setVisibility(View.GONE);
+                    }
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FirebaseError", error.getMessage());
+            }
+        });
+    }
+
+    private void deleteEvent(Event event) {
+        firebaseService.getEventsRef().child(event.getEventKey()).removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(EventDetailsActivity.this, "Event deleted successfully.", Toast.LENGTH_SHORT).show();
+                finish();  // Navigate back to the previous screen
+            } else {
+                Toast.makeText(EventDetailsActivity.this, "Failed to delete the event. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void quitEvent(Event event) {

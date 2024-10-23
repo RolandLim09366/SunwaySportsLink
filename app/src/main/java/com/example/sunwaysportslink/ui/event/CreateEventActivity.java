@@ -120,6 +120,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                     firebaseService.getEventsRef().child(eventKey).setValue(event).addOnCompleteListener(eventTask -> {
                         if (eventTask.isSuccessful()) {
+
                             // Success message
                             Toast.makeText(CreateEventActivity.this, "Event created successfully!", Toast.LENGTH_SHORT).show();
                             resetInputFields(); // Clear all fields after successful event creation
