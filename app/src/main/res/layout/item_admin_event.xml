@@ -37,16 +37,6 @@
         android:text="Ahmed Yusuf" />
 
     <TextView
-        android:id="@+id/tv_event_location"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:padding="4dp"
-        android:text="Sunway Basketball Court"
-        android:textSize="12sp" />
-
-    <TextView
         android:id="@+id/tv_event_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -54,6 +44,14 @@
         android:gravity="center"
         android:padding="4dp"
         android:text="29 Apr 2019" />
+
+    <TextView
+        android:id="@+id/tv_event_expired"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="4dp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_delete"

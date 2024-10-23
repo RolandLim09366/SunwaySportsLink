@@ -1,8 +1,12 @@
 package com.example.sunwaysportslink.model;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Event implements Serializable {
     private String title;
@@ -125,4 +129,22 @@ public class Event implements Serializable {
             joinedUsers.add(userId);
         }
     }
+
+    public boolean isExpired() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()); // Adjust the format to match your date input
+        try {
+            Date eventDate = sdf.parse(this.date); // Parse the event date
+            Date currentDate = sdf.parse(sdf.format(new Date())); // Parse today's date (date only)
+
+            if (eventDate != null && currentDate != null) {
+                return eventDate.before(currentDate); // Return true if eventDate is before currentDate
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
 }

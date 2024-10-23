@@ -49,8 +49,7 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
         private TextView eventTypeTextView;
         private TextView participantTextView;
         private TextView organizerTextView;
-        private TextView eventLocationTextView;
-        private TextView eventDateTextView;
+        private TextView eventDateTextView, expiredTextView;
         private androidx.appcompat.widget.AppCompatButton deleteButton;
 
         public EventViewHolder(@NonNull View itemView) {
@@ -58,8 +57,8 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
             eventTypeTextView = itemView.findViewById(R.id.tv_event_type);
             participantTextView = itemView.findViewById(R.id.tv_participant);
             organizerTextView = itemView.findViewById(R.id.tv_organizer);
-            eventLocationTextView = itemView.findViewById(R.id.tv_event_location);
             eventDateTextView = itemView.findViewById(R.id.tv_event_date);
+            expiredTextView = itemView.findViewById(R.id.tv_event_expired); // New TextView for expiration
             deleteButton = itemView.findViewById(R.id.btn_delete);
         }
 
@@ -67,8 +66,15 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
             eventTypeTextView.setText(event.getTitle()); // Assuming event type is the title
             participantTextView.setText(event.getCurrentParticipants() + "/" + event.getParticipantLimit());
             organizerTextView.setText(event.getCreatedBy());
-            eventLocationTextView.setText(event.getVenue());
             eventDateTextView.setText(event.getDate());
+
+            if (event.isExpired()) {
+                expiredTextView.setText("Expired");
+                expiredTextView.setTextColor(context.getResources().getColor(R.color.blood_red)); // Optional: Set red color for expired
+            } else {
+                expiredTextView.setText("Ongoing");
+                expiredTextView.setTextColor(context.getResources().getColor(R.color.steelblue)); // Optional: Set green color for ongoing
+            }
 
             // Delete button click handling
             deleteButton.setOnClickListener(v -> {
