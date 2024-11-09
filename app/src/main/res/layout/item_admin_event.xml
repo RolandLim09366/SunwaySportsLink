@@ -14,18 +14,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:padding="4dp"
-        android:text="Basketball" />
-
-
-    <!-- Users -->
-    <TextView
-        android:id="@+id/tv_participant"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:padding="4dp"
-        android:text="10/12" />
+        android:text="Basketball"
+        android:textSize="10sp" />
 
     <TextView
         android:id="@+id/tv_organizer"
@@ -35,6 +25,15 @@
         android:gravity="center"
         android:padding="4dp"
         android:text="Ahmed Yusuf" />
+
+    <TextView
+        android:id="@+id/tv_venue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="Sunway Basketball Court" />
 
     <TextView
         android:id="@+id/tv_event_date"
@@ -51,7 +50,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:padding="4dp" />
+        android:padding="4dp"
+        android:hint="Ongoing"
+        android:textSize="12sp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_delete"

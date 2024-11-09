@@ -4,25 +4,39 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.sunwaysportslink.R;
+import com.example.sunwaysportslink.firebase.FirebaseService;
+import com.example.sunwaysportslink.model.Event;
 import com.example.sunwaysportslink.ui.chat.ChatFragment;
 import com.example.sunwaysportslink.ui.event.MyEventFragment;
 import com.example.sunwaysportslink.ui.search.SearchFragment;
 import com.example.sunwaysportslink.ui.setting.SettingFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     BottomNavigationView bottomNavigationView;
 
-    public static void startIntent(Context context){
+    public static void startIntent(Context context) {
         Intent intent = new Intent(context, HomeActivity.class);
         context.startActivity(intent); // Start the LoginActivity directly
     }
@@ -83,10 +97,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
 
         // Replace the fragment in the FrameLayout if a fragment is selected
         if (selectedFragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment, selectedFragment)
-                    .commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, selectedFragment).commit();
             return true;
         }
 

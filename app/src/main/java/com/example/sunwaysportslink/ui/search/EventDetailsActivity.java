@@ -34,7 +34,7 @@ import java.util.Locale;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
-    private TextView tvParticipant, tvEventName, tvEventDate, tvEventVenue, tvTime, tvOrganizer;
+    private TextView tvParticipant, tvEventName, tvEventDate, tvEventVenue, tvTime, tvOrganizer, tvDetails;
     private FirebaseService firebaseService;
     private AppCompatButton btnJoinEvent, btnQuitEvent, btnDeleteEvent;
     private ImageView ivEventImage, editIcon;
@@ -57,7 +57,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Event Details");
+            getSupportActionBar().setTitle("Sport Event Details");
         }
 
         // Retrieve the event object from the Intent
@@ -71,6 +71,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvTime = findViewById(R.id.tv_time);
         tvParticipant = findViewById(R.id.tv_participant);
         tvOrganizer = findViewById(R.id.created_by);
+        tvDetails = findViewById(R.id.tv_details);
 
         tvEventName.setText(event.getTitle() + " Casual Play");
 
@@ -78,9 +79,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvEventDate.setText(formattedDate);
 
         tvEventVenue.setText(event.getVenue());
-        tvTime.setText(event.getStartTime() + "-" + event.getEndTime());
+        tvTime.setText(getOneHourTimeRange(event.getStartTime()));  // Set time range
         tvParticipant.setText(event.getCurrentParticipants() + "/" + event.getParticipantLimit());
         tvOrganizer.setText(event.getCreatedBy());
+        tvDetails.setText(event.getDetails() != null && !event.getDetails().isEmpty() ? event.getDetails() : "N/A");
 
         ivEventImage = findViewById(R.id.iv_sports_banner);
         editIcon = findViewById(R.id.iv_edit);
@@ -187,6 +189,22 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private String getOneHourTimeRange(String startTime) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault()); // Using hh:mm a for AM/PM
+        try {
+            Date startDate = timeFormat.parse(startTime);
+            if (startDate != null) {
+                // Add one hour to the start time
+                Date endDate = new Date(startDate.getTime() + 3600000); // 1 hour in milliseconds
+                return timeFormat.format(startDate) + " - " + timeFormat.format(endDate); // Format both start and end time with AM/PM
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return startTime; // Return original start time if parsing fails
+    }
+
 
     private void quitEvent(Event event) {
         FirebaseUser currentUser = firebaseService.getAuth().getCurrentUser();
@@ -329,9 +347,10 @@ public class EventDetailsActivity extends AppCompatActivity {
                 tvEventName.setText(updatedEvent.getTitle() + " Casual Play");
                 tvEventDate.setText(getFormattedDate(updatedEvent.getDate()));
                 tvEventVenue.setText(updatedEvent.getVenue());
-                tvTime.setText(updatedEvent.getStartTime() + "-" + updatedEvent.getEndTime());
+                tvTime.setText(getOneHourTimeRange(updatedEvent.getStartTime()));  // Set time range
                 tvParticipant.setText(updatedEvent.getCurrentParticipants() + "/" + updatedEvent.getParticipantLimit());
                 tvOrganizer.setText(updatedEvent.getCreatedBy());
+                tvDetails.setText(updatedEvent.getDetails());
             }
             // Update the image based on the updated event title
             switch (updatedEvent.getTitle().toLowerCase()) {

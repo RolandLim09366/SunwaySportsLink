@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -45,14 +44,13 @@ public class AccountDetailsActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText phoneEditText;
     private EditText genderEditText;
-    private EditText favouriteSportsEditText;
     private FirebaseService firebaseService;
     private String userId;
     private static final int PICK_IMAGE = 1;
     private static final int TAKE_PHOTO = 2;
     private static final int REQUEST_CAMERA_PERMISSION = 100;
     private CircleImageView profileImage;
-    private ImageView cameraIcon;
+    private ImageView cameraIcon, ivEdit;
     private Spinner spinnerFavouriteEvent;
 
     public static void startIntent(Context context) {
@@ -76,6 +74,7 @@ public class AccountDetailsActivity extends AppCompatActivity {
         spinnerFavouriteEvent = findViewById(R.id.spinner_favourite_sports);
         profileImage = findViewById(R.id.profileImage);
         cameraIcon = findViewById(R.id.iv_camera);
+        ivEdit = findViewById(R.id.iv_edit);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -102,6 +101,13 @@ public class AccountDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showImagePickerOptions();
+            }
+        });
+
+        ivEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleEditMode();
             }
         });
     }
@@ -288,20 +294,10 @@ public class AccountDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.edit_menu, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             // Navigate back to the previous screen (LoginActivity)
             finish();
-            return true;
-        }
-        if (item.getItemId() == R.id.action_edit) {
-            toggleEditMode();
             return true;
         }
         return super.onOptionsItemSelected(item);

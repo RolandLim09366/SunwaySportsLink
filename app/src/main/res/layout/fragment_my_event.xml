@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:padding="16dp"
     tools:context=".ui.event.MyEventFragment">
 
@@ -25,7 +24,8 @@
         android:src="@drawable/ic_create"
         app:layout_constraintBottom_toBottomOf="@+id/tv_my_events"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/fabIconColor" />
 
     <!-- RecyclerView to show user's created events -->
     <androidx.recyclerview.widget.RecyclerView

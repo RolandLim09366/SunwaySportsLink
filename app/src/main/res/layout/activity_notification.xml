@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:padding="16dp"
     tools:context=".ui.setting.changepassword.ChangePasswordActivity">
 
@@ -22,7 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/notification_settings"
-        android:textColor="@color/black"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -45,8 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/push_notification"
-        android:textColor="@color/black"
-        android:textSize="16dp"
+        android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_reminder" />
 
@@ -81,8 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/chat_notification"
-        android:textColor="@color/black"
-        android:textSize="16dp"
+        android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/line1" />
 
@@ -118,7 +114,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/email_notification"
         android:textColor="@color/black"
-        android:textSize="16dp"
+        android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/line2" />
 

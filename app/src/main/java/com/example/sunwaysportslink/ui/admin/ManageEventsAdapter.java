@@ -1,6 +1,7 @@
 package com.example.sunwaysportslink.ui.admin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.model.Event;
+import com.example.sunwaysportslink.ui.search.EventDetailsActivity;
 
 import java.util.List;
 
 public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapter.EventViewHolder> {
 
-    private List<Event> eventList;
-    private OnDeleteClickListener deleteClickListener;
-    private Context context;
+    private final List<Event> eventList;
+    private final OnDeleteClickListener deleteClickListener;
+    private final Context context;
 
     public ManageEventsAdapter(List<Event> eventList, Context context, OnDeleteClickListener deleteClickListener) {
         this.eventList = eventList;
@@ -29,8 +31,7 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_admin_event, parent, false); // Assuming item_center.xml is your layout
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_admin_event, parent, false); // Assuming item_center.xml is your layout
         return new EventViewHolder(view);
     }
 
@@ -46,16 +47,17 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
     }
 
     public class EventViewHolder extends RecyclerView.ViewHolder {
-        private TextView eventTypeTextView;
-        private TextView participantTextView;
-        private TextView organizerTextView;
-        private TextView eventDateTextView, expiredTextView;
-        private androidx.appcompat.widget.AppCompatButton deleteButton;
+        private final TextView eventTypeTextView;
+        private final TextView venueTextView;
+        private final TextView organizerTextView;
+        private final TextView eventDateTextView;
+        private final TextView expiredTextView;
+        private final androidx.appcompat.widget.AppCompatButton deleteButton;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             eventTypeTextView = itemView.findViewById(R.id.tv_event_type);
-            participantTextView = itemView.findViewById(R.id.tv_participant);
+            venueTextView = itemView.findViewById(R.id.tv_venue);
             organizerTextView = itemView.findViewById(R.id.tv_organizer);
             eventDateTextView = itemView.findViewById(R.id.tv_event_date);
             expiredTextView = itemView.findViewById(R.id.tv_event_expired); // New TextView for expiration
@@ -64,8 +66,8 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
 
         public void bind(Event event, int position) {
             eventTypeTextView.setText(event.getTitle()); // Assuming event type is the title
-            participantTextView.setText(event.getCurrentParticipants() + "/" + event.getParticipantLimit());
-            organizerTextView.setText(event.getCreatedBy());
+            venueTextView.setText(event.getVenue());
+            organizerTextView.setText(event.getCreatedBy() != null && !event.getCreatedBy().isEmpty() ? event.getCreatedBy() : "N/A");
             eventDateTextView.setText(event.getDate());
 
             if (event.isExpired()) {
@@ -81,6 +83,11 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
                 if (deleteClickListener != null) {
                     deleteClickListener.onDeleteClick(event, position);
                 }
+            });
+
+            // Item click handling for navigating to EventDetailsActivity
+            itemView.setOnClickListener(v -> {
+              EventDetailsActivity.startIntent(context, event, true);
             });
         }
     }

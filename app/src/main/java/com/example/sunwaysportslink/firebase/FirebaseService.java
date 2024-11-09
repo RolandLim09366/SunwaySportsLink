@@ -8,8 +8,8 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FirebaseService {
 
     private static FirebaseService instance;
-    private FirebaseAuth mAuth;
-    private DatabaseReference rootRef;
+    private final FirebaseAuth mAuth;
+    private final DatabaseReference rootRef;
 
     private FirebaseService() {
         // Initialize FirebaseAuth instance
@@ -53,6 +53,7 @@ public class FirebaseService {
     public DatabaseReference getUserRef() {
         return getReference("users");
     }
+
     public DatabaseReference getEventsRef() {
         return getReference("events");
     }

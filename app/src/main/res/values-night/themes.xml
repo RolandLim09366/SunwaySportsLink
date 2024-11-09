@@ -1,10 +1,12 @@
 <resources>
-    <!-- Base application theme. -->
     <style name="Base.Theme.SunwaySportsLink" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-        <item name="android:windowIsTranslucent">true</item>
-
+        <!-- Dark mode colors -->
+        <item name="android:statusBarColor">@color/darkmode</item> <!-- Black status bar -->
+        <item name="android:windowLightStatusBar">false</item> <!-- White icons on dark background -->
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:colorBackground">@color/darkmode</item> <!-- Black background -->
+        <item name="android:textColorPrimary">@color/white</item> <!-- White text -->
+        <item name="android:textColorHint">@color/black</item> <!-- Light gray hint text in light mode -->
 
     </style>
 </resources>

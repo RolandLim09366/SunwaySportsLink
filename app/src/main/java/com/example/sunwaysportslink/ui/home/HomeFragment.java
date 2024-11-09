@@ -108,12 +108,17 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 favoriteEventsList.clear();
                 for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    if (favoriteEventsList.size() >= 5) break; // Limit to 5 events
                     Event event = eventSnapshot.getValue(Event.class);
                     if (event != null && favoriteSports.equals(event.getTitle())) {
                         favoriteEventsList.add(event);
                     }
                 }
-                favoriteEventsAdapter.notifyDataSetChanged();
+                if (favoriteEventsList.isEmpty()) {
+                    fetchRandomEvents();
+                } else {
+                    favoriteEventsAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -125,7 +130,7 @@ public class HomeFragment extends Fragment {
 
     private void fetchRandomEvents() {
         FirebaseService firebaseService = FirebaseService.getInstance();
-        firebaseService.getEventsRef().limitToFirst(10).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebaseService.getEventsRef().limitToFirst(5).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 favoriteEventsList.clear();

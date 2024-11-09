@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -14,30 +13,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
         android:padding="8dp">
 
         <!-- Center Name -->
         <TextView
-            android:id="@+id/tv_event_type"
+            android:id="@+id/tv_sport_type"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:padding="4dp"
-            android:text="@string/category" />
-
-
-        <!-- Users -->
-        <TextView
-            android:id="@+id/tv_participant"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="4dp"
-            android:text="@string/participants" />
+            android:text="@string/sport_type" />
 
         <TextView
             android:id="@+id/tv_organizer"
@@ -47,6 +34,15 @@
             android:gravity="center"
             android:padding="4dp"
             android:text="@string/organizer" />
+
+        <TextView
+            android:id="@+id/tv_venue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="@string/venue" />
 
         <TextView
             android:id="@+id/tv_event_date"
@@ -64,7 +60,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="4dp"
-            android:text="Expired/Ongoing" />
+            android:text="@string/expired" />
 
         <TextView
             android:id="@+id/tv_delete"
