@@ -1,14 +1,14 @@
 package com.example.sunwaysportslink.ui.event;
 
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -27,16 +27,32 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class EditEventActivity extends AppCompatActivity {
 
     private EditText etParticipantLimit, etDetails;
-    private Spinner spinnerEventType, spinnerVenue;
-    private AppCompatButton etEventDate, etEventStartTime, etEventEndTime, btnSaveEvent;
+    private Spinner spinnerEventType, spinnerVenue, timeSlotSpinner;
+    private AppCompatButton etEventDate, btnSaveEvent;
     private Event event;  // Event object to store the event being edited
     private ImageView ivSports;
     private FirebaseService firebaseService;
+    private final HashMap<String, List<String>> sportVenueMap = new HashMap<String, List<String>>() {{
+        put("Basketball", Arrays.asList("Basketball Court Half A", "Basketball Court Half B"));
+        put("Football", Collections.singletonList("Football Field"));
+        put("Futsal", Collections.singletonList("Multi-sports Court"));
+        put("Volleyball", Collections.singletonList("Volleyball Court"));
+        put("Tennis", Collections.singletonList("Tennis Court"));
+    }};
+    private final String[] timeSlots = {"7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM"};
+
 
     public static void startIntent(Context context, Event event) {
         Intent intent = new Intent(context, EditEventActivity.class);
@@ -55,7 +71,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Edit Event");
+            getSupportActionBar().setTitle("Edit Sport Event");
         }
 
         // Initialize Firebase service
@@ -67,10 +83,9 @@ public class EditEventActivity extends AppCompatActivity {
         spinnerEventType = findViewById(R.id.spinner_event_type);
         spinnerVenue = findViewById(R.id.spinner_venue);
         etEventDate = findViewById(R.id.et_event_date);
-        etEventStartTime = findViewById(R.id.et_event_start_time);
-        etEventEndTime = findViewById(R.id.et_event_end_time);
         btnSaveEvent = findViewById(R.id.btn_create_event);
         ivSports = findViewById(R.id.iv_sports);
+        timeSlotSpinner = findViewById(R.id.spinner_time_slot);
 
         setUpSpinners();
         event = (Event) getIntent().getSerializableExtra("event");
@@ -81,6 +96,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         if (eventKey != null) {
             loadEventDetailsFromFirebase(eventKey);
+
         }
 
         // Set save button listener
@@ -93,8 +109,18 @@ public class EditEventActivity extends AppCompatActivity {
 
         // Set up click listeners for date and time pickers
         etEventDate.setOnClickListener(v -> showDatePickerDialog());
-        etEventStartTime.setOnClickListener(v -> showTimePickerDialog(etEventStartTime));
-        etEventEndTime.setOnClickListener(v -> showTimePickerDialog(etEventEndTime));
+
+        spinnerVenue.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                loadAvailableTimeSlots();  // Only call the function if both venue and date are selected
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
     }
 
     private void loadEventDetailsFromFirebase(String eventKey) {
@@ -125,8 +151,8 @@ public class EditEventActivity extends AppCompatActivity {
             etParticipantLimit.setText(event.getParticipantLimit());
             etDetails.setText(event.getDetails());
             etEventDate.setText(event.getDate());
-            etEventStartTime.setText(event.getStartTime());
-            etEventEndTime.setText(event.getEndTime());
+            etDetails.setText(event.getDetails() != null && !event.getDetails().isEmpty() ? event.getDetails() : "N/A");
+            // Mark date and venue as selected
 
             // Set selected values in the spinners (replace getIndex with your method)
             spinnerEventType.setSelection(getIndexForSpinner(spinnerEventType, event.getTitle()));  // Assuming 'title' refers to event type
@@ -165,59 +191,90 @@ public class EditEventActivity extends AppCompatActivity {
             Toast.makeText(this, "Event date is required", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (TextUtils.isEmpty(etEventStartTime.getText())) {
-            Toast.makeText(this, "Start time is required", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (TextUtils.isEmpty(etEventEndTime.getText())) {
-            Toast.makeText(this, "End time is required", Toast.LENGTH_SHORT).show();
-            return false;
-        }
 
         return true;
     }
 
     private void setUpSpinners() {
         String[] eventTypes = {"Basketball", "Football", "Futsal", "Volleyball", "Tennis"};
-        String[] venueOptions = {"Basketball Court Half A", "Basketball Court Half B", "Football Field", "Multi-sports Court", "Volleyball Court", "Tennis Court"};
 
-        spinnerEventType.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypes));
-        spinnerVenue.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, venueOptions));
+        ArrayAdapter<String> eventTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypes);
+        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerEventType.setAdapter(eventTypeAdapter);
+
+        // Set up event type selection listener
+        spinnerEventType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedSportType = spinnerEventType.getSelectedItem().toString();
+                List<String> allowedVenues = sportVenueMap.getOrDefault(selectedSportType, new ArrayList<>());
+
+                // Update the venue spinner based on the selected sport type
+                ArrayAdapter<String> venueAdapter = new ArrayAdapter<>(EditEventActivity.this, android.R.layout.simple_spinner_item, allowedVenues);
+                venueAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerVenue.setAdapter(venueAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
+
+        // Set up initial venues based on the first sport type
+        List<String> initialVenues = sportVenueMap.get(eventTypes[0]);
+        ArrayAdapter<String> initialVenueAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, initialVenues);
+        initialVenueAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerVenue.setAdapter(initialVenueAdapter);
     }
 
-    // Method to update event details in Firebase
     private void updateEventDetails() {
         String participantLimit = etParticipantLimit.getText().toString();
         String details = etDetails.getText().toString();
         String date = etEventDate.getText().toString();
-        String startTime = etEventStartTime.getText().toString();
-        String endTime = etEventEndTime.getText().toString();
         String eventType = spinnerEventType.getSelectedItem().toString();
         String venue = spinnerVenue.getSelectedItem().toString();
+        String newTimeSlot = timeSlotSpinner.getSelectedItem().toString();
 
-        // Update the event object with new values
-        event.setParticipantLimit(participantLimit);
-        event.setDetails(details);
-        event.setDate(date);
-        event.setStartTime(startTime);
-        event.setEndTime(endTime);
-        event.setTitle(eventType);
-        event.setVenue(venue);
+        // Check if the time slot has changed
+        // Reference to the original booked time slot in the database
+        DatabaseReference originalSlotRef = firebaseService.getReference("Bookings").child(event.getVenue()).child(event.getDate()).child(event.getStartTime());
 
-        // Save updated event to Firebase
-        DatabaseReference eventRef = firebaseService.getEventsRef().child(event.getEventKey());
-        eventRef.setValue(event).addOnCompleteListener(task -> {
+        // Remove the original booked time slot
+        originalSlotRef.removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                // Return the updated event to EventDetailsActivity
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("updatedEvent", event);
-                setResult(RESULT_OK, returnIntent);
-                finish();  // Close EditEventActivity
-                Toast.makeText(EditEventActivity.this, "Event updated successfully", Toast.LENGTH_SHORT).show();
+                // Update the event object with the new values
+                event.setParticipantLimit(participantLimit);
+                event.setDetails(details);
+                event.setDate(date);
+                event.setTitle(eventType);
+                event.setVenue(venue);
+                event.setStartTime(newTimeSlot);
+
+                // Save the updated event in the database
+                DatabaseReference eventRef = firebaseService.getEventsRef().child(event.getEventKey());
+                eventRef.setValue(event).addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        // Store the new time slot in the database under the selected venue and date
+                        DatabaseReference newSlotRef = firebaseService.getReference("Bookings").child(venue).child(date).child(newTimeSlot);
+                        newSlotRef.setValue(newTimeSlot);
+
+                        // Notify the user and close the activity
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("updatedEvent", event);
+                        setResult(RESULT_OK, returnIntent);
+                        finish();
+                        Toast.makeText(EditEventActivity.this, "Event updated successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(EditEventActivity.this, "Failed to update event", Toast.LENGTH_SHORT).show();
+                    }
+                });
             } else {
-                Toast.makeText(EditEventActivity.this, "Failed to update event", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditEventActivity.this, "Failed to delete original time slot", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     // Helper method to get the index of a spinner item (assuming values are strings)
@@ -240,20 +297,6 @@ public class EditEventActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void showTimePickerDialog(Button timeEditText) {
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute1) -> {
-            // Format the selected time
-            String selectedTime = String.format("%02d:%02d", hourOfDay, minute1);
-            timeEditText.setText(selectedTime);
-        }, hour, minute, true);
-
-        timePickerDialog.show();
-    }
-
     // Method to show DatePickerDialog for event date
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
@@ -263,10 +306,59 @@ public class EditEventActivity extends AppCompatActivity {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year1, monthOfYear, dayOfMonth) -> {
             // Format the selected date
-            String selectedDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year1;
-            etEventDate.setText(selectedDate);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            calendar.set(year1, monthOfYear, dayOfMonth);
+            String formattedDate = sdf.format(calendar.getTime());
+            etEventDate.setText(formattedDate);  // Set formatted date to the EditTex
+            loadAvailableTimeSlots();
         }, year, month, day);
 
         datePickerDialog.show();
+    }
+
+    private void loadAvailableTimeSlots() {
+        String selectedVenue = spinnerVenue.getSelectedItem().toString();
+        String selectedDate = etEventDate.getText().toString();
+
+        // Ensure that both the venue and date are selected before proceeding
+        if (!selectedDate.isEmpty() && !selectedVenue.isEmpty()) {
+            DatabaseReference bookingsRef = firebaseService.getReference("Bookings").child(selectedVenue).child(selectedDate);
+
+            bookingsRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<String> bookedSlots = new ArrayList<>();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String bookedSlot = snapshot.getValue(String.class);
+                        if (bookedSlot != null) {
+                            bookedSlots.add(bookedSlot);
+                        }
+                    }
+
+                    // Create a new list from the original timeSlots array to avoid modifying the original array
+                    List<String> availableSlots = new ArrayList<>(Arrays.asList(timeSlots));
+
+                    // Remove booked slots but keep the current slot if it's already booked
+                    if (!bookedSlots.contains(event.getStartTime())) {
+                        availableSlots.removeAll(bookedSlots);
+                    } else {
+                        availableSlots.removeAll(bookedSlots);
+                        availableSlots.add(0, "Original Booking Time: " + event.getStartTime()); // Add the current slot at the start
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(EditEventActivity.this, android.R.layout.simple_spinner_item, availableSlots);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    timeSlotSpinner.setAdapter(adapter);
+
+                    // Set the current time slot as selected
+                    timeSlotSpinner.setSelection(getIndexForSpinner(timeSlotSpinner, event.getStartTime()));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(EditEventActivity.this, "Error loading time slots", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }

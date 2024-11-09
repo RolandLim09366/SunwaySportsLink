@@ -13,7 +13,6 @@ public class Event implements Serializable {
     private String date;
     private String venue;
     private String startTime;
-    private String endTime;
     private String participantLimit;
     private String details;
     private String createdBy;
@@ -25,12 +24,11 @@ public class Event implements Serializable {
     public Event() {
     }
 
-    public Event(String title, String date, String venue, String startTime, String endTime, String participantLimit, String details, String createdBy) {
+    public Event(String title, String date, String venue, String startTime, String participantLimit, String details, String createdBy) {
         this.title = title;
         this.date = date;
         this.venue = venue;
         this.startTime = startTime;
-        this.endTime = endTime;
         this.participantLimit = participantLimit;
         this.details = details;
         this.createdBy = createdBy;
@@ -53,10 +51,6 @@ public class Event implements Serializable {
 
     public String getStartTime() {
         return startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
     }
 
     public String getParticipantLimit() {
@@ -100,10 +94,6 @@ public class Event implements Serializable {
         this.startTime = startTime;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
     public void setParticipantLimit(String participantLimit) {
         this.participantLimit = participantLimit;
     }
@@ -144,7 +134,4 @@ public class Event implements Serializable {
         }
         return false;
     }
-
-
-
 }

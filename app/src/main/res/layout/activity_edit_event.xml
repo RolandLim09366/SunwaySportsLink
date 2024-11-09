@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:padding="16dp"
     tools:context=".ui.event.EditEventActivity">
 
@@ -50,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/event_type"
+                android:text="@string/sport_type"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/banner" />
@@ -112,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/event_date_and_time"
+                android:text="@string/date"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/spinner_venue" />
@@ -121,42 +120,31 @@
                 android:id="@+id/et_event_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/whitesmoke"
+                android:background="@drawable/et_background"
                 android:clickable="true"
                 android:focusable="true"
                 android:hint="@string/select_date"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_event_date" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/et_event_start_time"
-                android:layout_width="160dp"
+            <TextView
+                android:id="@+id/tv_time_slot"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@color/whitesmoke"
-                android:hint="@string/start_time"
+                android:layout_marginTop="16dp"
+                android:text="@string/available_time_slots"
+                android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/et_event_date" />
 
-            <TextView
-                android:id="@+id/tv_to"
-                android:layout_width="wrap_content"
+            <Spinner
+                android:id="@+id/spinner_time_slot"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/to"
-                app:layout_constraintBottom_toBottomOf="@+id/et_event_end_time"
+                android:background="@drawable/et_background"
+                android:padding="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/et_event_end_time" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/et_event_end_time"
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/whitesmoke"
-                android:hint="@string/end_time"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/et_event_start_time"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_time_slot" />
 
             <TextView
                 android:id="@+id/tv_details"
@@ -166,7 +154,7 @@
                 android:text="@string/event_details"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/et_event_end_time" />
+                app:layout_constraintTop_toBottomOf="@+id/spinner_time_slot" />
 
             <EditText
                 android:id="@+id/et_details"
@@ -174,23 +162,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/et_background"
-                android:hint="@string/event_details_hint"
                 android:inputType="textLongMessage"
                 android:padding="8dp"
                 android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/btn_create_event"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_details" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_create_event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_btn_register"
+                android:text="@string/save_event"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_details" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_create_event"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_btn_register"
-        android:text="SAVE EVENT"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
         android:padding="16dp"
         tools:context=".ui.setting.SettingFragment">
 
@@ -33,7 +32,6 @@
             android:id="@+id/tv_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:text="@string/settings"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -46,7 +44,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@{viewModel.username}"
-            android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -55,8 +52,8 @@
 
         <ImageView
             android:id="@+id/iv_account"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:scaleType="centerCrop"
@@ -70,7 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/account_details"
-            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/iv_account"
             app:layout_constraintLeft_toRightOf="@+id/iv_account"
@@ -84,7 +80,8 @@
             android:src="@drawable/ic_black_arrow"
             app:layout_constraintBottom_toBottomOf="@+id/iv_account"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/iv_account" />
+            app:layout_constraintTop_toTopOf="@+id/iv_account"
+            app:tint="@color/fabIconColor" />
 
         <View
             android:id="@+id/line1"
@@ -97,8 +94,8 @@
 
         <ImageView
             android:id="@+id/iv_notification"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginTop="16dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_notification"
@@ -109,13 +106,13 @@
             android:id="@+id/tv_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:text="@string/notification"
-            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/iv_notification"
             app:layout_constraintLeft_toRightOf="@+id/iv_account"
-            app:layout_constraintTop_toTopOf="@+id/iv_notification" />
+            app:layout_constraintTop_toTopOf="@+id/iv_notification"
+            app:layout_constraintVertical_bias="0.476" />
 
         <ImageView
             android:id="@+id/ic_black_arrow_2"
@@ -125,7 +122,8 @@
             android:src="@drawable/ic_black_arrow"
             app:layout_constraintBottom_toBottomOf="@+id/iv_notification"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/iv_notification" />
+            app:layout_constraintTop_toTopOf="@+id/iv_notification"
+            app:tint="@color/fabIconColor" />
 
         <View
             android:id="@+id/line2"
@@ -138,8 +136,8 @@
 
         <ImageView
             android:id="@+id/iv_change_password"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginTop="16dp"
             android:src="@drawable/ic_change_password"
             app:layout_constraintLeft_toLeftOf="@id/iv_account"
@@ -151,7 +149,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/change_password"
-            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/iv_change_password"
             app:layout_constraintLeft_toRightOf="@+id/iv_account"
@@ -165,7 +162,48 @@
             android:src="@drawable/ic_black_arrow"
             app:layout_constraintBottom_toBottomOf="@+id/iv_change_password"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/iv_change_password" />
+            app:layout_constraintTop_toTopOf="@+id/iv_change_password"
+            app:tint="@color/fabIconColor" />
+
+        <View
+            android:id="@+id/line3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/light_gray"
+            app:layout_constraintBottom_toTopOf="@+id/iv_change_language"
+            app:layout_constraintLeft_toLeftOf="@id/iv_account" />
+
+        <ImageView
+            android:id="@+id/iv_change_language"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_language"
+            app:layout_constraintLeft_toLeftOf="@id/iv_account"
+            app:layout_constraintTop_toBottomOf="@+id/iv_change_password" />
+
+        <TextView
+            android:id="@+id/tv_change_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/language"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_change_language"
+            app:layout_constraintLeft_toRightOf="@+id/iv_account"
+            app:layout_constraintTop_toTopOf="@+id/iv_change_language" />
+
+        <ImageView
+            android:id="@+id/ic_black_arrow_4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_black_arrow"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_change_language"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_change_language"
+            app:tint="@color/fabIconColor" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_log_out"

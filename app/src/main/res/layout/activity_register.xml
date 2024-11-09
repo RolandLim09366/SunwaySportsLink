@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:padding="16dp"
     tools:context=".ui.register.RegisterActivity">
 
@@ -45,7 +44,7 @@
         android:inputType="textEmailAddress"
         android:paddingHorizontal="12dp"
         android:paddingVertical="8dp"
-        android:textColorHint="@color/black"
+        android:textColor="@color/black"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/iv_register" />
@@ -58,11 +57,11 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/et_background"
         android:elevation="4dp"
-        android:hint="Password"
+        android:hint="@string/password"
         android:inputType="textPassword"
         android:paddingHorizontal="12dp"
         android:paddingVertical="8dp"
-        android:textColorHint="@color/black"
+        android:textColor="@color/black"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@+id/email" />
@@ -74,11 +73,11 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/et_background"
         android:elevation="4dp"
-        android:hint="Re-type Password"
+        android:hint="@string/re_type_password"
         android:inputType="textPassword"
         android:paddingHorizontal="12dp"
         android:paddingVertical="8dp"
-        android:textColorHint="@color/black"
+        android:textColor="@color/black"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@+id/passwd" />

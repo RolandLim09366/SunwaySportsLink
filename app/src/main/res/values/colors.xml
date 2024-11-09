@@ -7,4 +7,9 @@
     <color name="whitesmoke">#F5F5F5</color>
     <color name="light_gray">#D3D3D3</color>
     <color name="blood_red">#880808</color>
+    <color name="denim">#6F8FAF</color>
+    <color name="cardBackgroundColor">#F5F5F5</color> <!-- White or light color for light mode -->
+    <color name="fabIconColor">#000000</color> <!-- Black or default color for light mode -->
+    <color name="darkmode">#121212</color> <!-- Black or default color for light mode -->
+    <color name="darksilver">#F5F5F5</color> <!-- Black or default color for light mode -->
 </resources>
