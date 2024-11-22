@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class EditEventActivity extends AppCompatActivity {
 
@@ -183,12 +183,24 @@ public class EditEventActivity extends AppCompatActivity {
 
     // Method to validate input fields
     private boolean validateInput() {
-        if (TextUtils.isEmpty(etParticipantLimit.getText())) {
-            Toast.makeText(this, "Participant limit is required", Toast.LENGTH_SHORT).show();
+
+        // Original event data variables
+        String originalTitle, originalParticipant, originalDate, originalVenue, originalDetails, originalTime;
+        // Get the original values when loading the event
+        originalTitle = event.getTitle();
+        originalParticipant = event.getParticipantLimit();
+        originalDate = event.getDate();
+        originalVenue = event.getVenue();
+        originalDetails = event.getDetails();
+        originalTime = event.getStartTime();
+
+        if (Objects.equals(originalTitle, spinnerEventType.getSelectedItem().toString()) && originalParticipant.equals(etParticipantLimit.getText().toString()) && Objects.equals(originalVenue, spinnerVenue.getSelectedItem().toString()) && Objects.equals(originalDate, etEventDate.getText().toString()) && Objects.equals(originalTime, timeSlotSpinner.getSelectedItem().toString()) && Objects.equals(originalDetails, etDetails.getText().toString())) {
+            Toast.makeText(this, "No changes update", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (TextUtils.isEmpty(etEventDate.getText())) {
-            Toast.makeText(this, "Event date is required", Toast.LENGTH_SHORT).show();
+
+        if (etParticipantLimit.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Participant limit is required", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -343,7 +355,7 @@ public class EditEventActivity extends AppCompatActivity {
                         availableSlots.removeAll(bookedSlots);
                     } else {
                         availableSlots.removeAll(bookedSlots);
-                        availableSlots.add(0, "Original Booking Time: " + event.getStartTime()); // Add the current slot at the start
+                        availableSlots.add(0, event.getStartTime()); // Add the current slot at the start
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(EditEventActivity.this, android.R.layout.simple_spinner_item, availableSlots);

@@ -1,6 +1,8 @@
 package com.example.sunwaysportslink.ui.home;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,15 +39,22 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         holder.tvNewsTitle.setText(newsItem.getTitle());
         holder.tvNewsDescription.setText(newsItem.getDescription());
 
-        // Load the image using Glide
         if (newsItem.getImageUrl() != null && !newsItem.getImageUrl().isEmpty()) {
-            Glide.with(holder.itemView.getContext())
-                    .load(newsItem.getImageUrl())
-                    .placeholder(R.drawable.ic_camera) // optional placeholder
-                    .into(holder.ivNewsImage);
+            try {
+                Uri imageUri = Uri.parse(newsItem.getImageUrl());
+                Glide.with(holder.itemView.getContext())
+                        .load(imageUri)
+                        .placeholder(R.drawable.iv_sports)
+                        .error(R.drawable.iv_sports)
+                        .into(holder.ivNewsImage);
+            } catch (Exception e) {
+                Log.e("NewsAdapter", "Error loading image: " + e.getMessage());
+                holder.ivNewsImage.setImageResource(R.drawable.iv_sports);
+            }
         } else {
-            holder.ivNewsImage.setImageResource(R.drawable.ic_camera); // default placeholder
+            holder.ivNewsImage.setImageResource(R.drawable.iv_sports);
         }
+
 
         // Set click listener to navigate to the news details page
         holder.itemView.setOnClickListener(v -> {

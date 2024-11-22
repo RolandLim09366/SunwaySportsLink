@@ -47,7 +47,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // Enable the back arrow
-            getSupportActionBar().setTitle("");       // Set the title of the page
+            getSupportActionBar().setTitle("Create New Password");       // Set the title of the page
         }
 
         btnResetPassword.setOnClickListener(v -> changePassword());

@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.database)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.functions)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -69,5 +70,9 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation ("androidx.work:work-runtime:2.7.0") // Use the latest version available
+    implementation ("com.google.firebase:firebase-messaging:23.x.x")
 
+    implementation ("com.google.firebase:firebase-storage:20.2.1")
+
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }

@@ -16,6 +16,16 @@
         android:orientation="horizontal"
         android:padding="8dp">
 
+        <TextView
+            android:id="@+id/tv_users_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="USER"
+            android:textSize="11sp" />
+
         <!-- Center Name -->
         <TextView
             android:id="@+id/tv_event_type"
@@ -24,36 +34,17 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="4dp"
-            android:text="@string/username" />
-
-
-        <!-- Users -->
-        <TextView
-            android:id="@+id/tv_participant"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="4dp"
-            android:text="@string/gender" />
+            android:text="@string/username"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/tv_organizer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:gravity="center"
             android:padding="4dp"
             android:text="@string/email" />
-
-        <TextView
-            android:id="@+id/tv_event_location"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="4dp"
-            android:text="@string/phone_number" />
 
         <TextView
             android:id="@+id/tv_event_date"

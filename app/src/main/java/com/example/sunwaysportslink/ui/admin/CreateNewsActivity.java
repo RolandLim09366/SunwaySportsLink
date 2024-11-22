@@ -27,6 +27,8 @@ import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.firebase.FirebaseService;
 import com.example.sunwaysportslink.model.SportsNews;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -99,21 +101,31 @@ public class CreateNewsActivity extends AppCompatActivity {
         }
 
         if (selectedImageUri != null) {
-            uploadImageAndSaveNews(selectedImageUri, title, description);  // Upload the image and then save news details
+            uploadImage(selectedImageUri, title, description);  // Upload the image and then save news details
         } else {
             Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void uploadImageAndSaveNews(Uri imageUri, String title, String description) {
-        String newsId = sportsNewsRef.push().getKey(); // Get a unique ID for the news
+    private void uploadImage(Uri imageUri, String title, String description) {
+        // Firebase Storage reference
+        FirebaseStorage storage = FirebaseStorage.getInstance("gs://sunwaysportslink.firebasestorage.app");
+        StorageReference storageRef = storage.getReference().child("news_images/" + System.currentTimeMillis() + ".jpg");
 
+        storageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String imageUrl = uri.toString();
+
+                    // Save the news item with the download URL
+                    saveNewsToDatabase(title, description, imageUrl);
+                }))
+                .addOnFailureListener(e -> Toast.makeText(CreateNewsActivity.this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void saveNewsToDatabase(String title, String description, String imageUrl) {
+        String newsId = sportsNewsRef.push().getKey(); // Get a unique ID for the news
         if (newsId == null) return;
 
-        // Convert the URI to string to store in the database (you are not using Firebase Storage directly)
-        String imageUrl = imageUri.toString();
-
-        // Create the SportsNews object with the image URL
         SportsNews sportsNews = new SportsNews(title, description, imageUrl);
         sportsNews.setId(newsId); // Set the news ID
 
@@ -121,13 +133,19 @@ public class CreateNewsActivity extends AppCompatActivity {
         sportsNewsRef.child(newsId).setValue(sportsNews).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(CreateNewsActivity.this, "News created successfully", Toast.LENGTH_SHORT).show();
-                etNewsTitle.setText("");
-                etNewsDescription.setText("");
-                ivNews.setImageResource(R.drawable.ic_camera); // Reset image view (use your placeholder image)
+                resetFields();
+                finish();
             } else {
                 Toast.makeText(CreateNewsActivity.this, "Failed to create news", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void resetFields() {
+        etNewsTitle.setText("");
+        etNewsDescription.setText("");
+        ivNews.setImageResource(R.drawable.iv_sports); // Reset to a placeholder image
+        selectedImageUri = null; // Reset the selected image URI
     }
 
     @Override
@@ -193,22 +211,7 @@ public class CreateNewsActivity extends AppCompatActivity {
     }
 
     private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "ProfilePic", null);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "news", null);
         return Uri.parse(path);
-    }
-
-    private void uploadImageToFirebase(Uri imageUri) {
-        // Convert the Uri to a string before storing it in Firebase
-        String imageUrl = imageUri.toString();
-        String newsId = sportsNewsRef.push().getKey();
-
-        // Update the user profile image URL under the "users" node
-        sportsNewsRef.child(newsId).child("profileImageUrl").setValue(imageUrl).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Toast.makeText(CreateNewsActivity.this, "Profile image updated successfully", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(CreateNewsActivity.this, "Failed to update profile image", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }

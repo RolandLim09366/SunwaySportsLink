@@ -1,7 +1,5 @@
 package com.example.sunwaysportslink.model;
 
-import java.util.List;
-
 public class User {
     private String email;
     private String username;
@@ -10,6 +8,7 @@ public class User {
     private String userId;
     private String favourite_sports;
     private String lastOnlineTime; // New field for last online time
+    private String fcmToken;
 
 
     // No-argument constructor (required for Firebase)
@@ -96,5 +95,13 @@ public class User {
         } else {
             return email; // In case of malformed email, return the full email as fallback
         }
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }

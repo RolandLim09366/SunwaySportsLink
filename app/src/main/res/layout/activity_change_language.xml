@@ -1,0 +1,57 @@
+<!-- activity_change_language.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="-16dp" />
+
+    <RadioGroup
+        android:id="@+id/languageRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rbEnglish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/ic_english"
+            android:drawablePadding="4dp"
+            android:text="@string/english" />
+
+        <RadioButton
+            android:id="@+id/rbMandarin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/ic_md"
+            android:drawablePadding="4dp"
+            android:text="@string/mandarin" />
+
+        <RadioButton
+            android:id="@+id/rbBahasaMelayu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/ic_bm"
+            android:drawablePadding="4dp"
+            android:text="@string/bahasa_melayu" />
+
+        <!-- Add more language options as needed -->
+    </RadioGroup>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSaveLanguage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_btn_register"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+</LinearLayout>

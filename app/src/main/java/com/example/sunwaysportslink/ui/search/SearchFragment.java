@@ -371,19 +371,13 @@ public class SearchFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
 
                 if (dataSnapshot.exists()) {  // Only proceed if there is data
+                    binding.tvNoEvents.setVisibility(View.GONE);
                     eventList.clear(); // Clear the list to avoid duplicates
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Event event = snapshot.getValue(Event.class);
                         if (event != null) {
-                            eventList.add(event); // Add event to the list
+                            eventList.add(0, event); // Insert event at the top of the list
                         }
-                    }
-
-                    // Check if the eventList is empty and show the "No Events" text accordingly
-                    if (eventList.isEmpty()) {
-                        binding.tvNoEvents.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.tvNoEvents.setVisibility(View.GONE);
                     }
 
                     // Clear the displayedList and then add all events from eventList
@@ -392,6 +386,8 @@ public class SearchFragment extends Fragment {
 
                     // Notify the adapter that data has changed
                     eventAdapter.updateEvents(displayedList);
+                } else {
+                    binding.tvNoEvents.setVisibility(View.VISIBLE);
                 }
             }
 

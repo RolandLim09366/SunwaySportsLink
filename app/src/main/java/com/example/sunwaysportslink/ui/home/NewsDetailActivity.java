@@ -47,7 +47,7 @@ public class NewsDetailActivity extends AppCompatActivity {
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(this).load(imageUrl).placeholder(R.drawable.ic_camera).into(ivNewsImage);
         } else {
-            ivNewsImage.setImageResource(R.drawable.ic_camera); // Default placeholder if no image
+            ivNewsImage.setImageResource(R.drawable.iv_sports); // Default placeholder if no image
         }
     }
 

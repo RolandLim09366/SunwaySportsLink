@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/iv_sports"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="180dp"
             android:scaleType="centerCrop"
             android:src="@drawable/iv_tennis"
             app:layout_constraintDimensionRatio="16:9"

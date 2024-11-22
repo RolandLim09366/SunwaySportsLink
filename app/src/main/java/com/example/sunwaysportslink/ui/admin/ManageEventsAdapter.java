@@ -1,7 +1,6 @@
 package com.example.sunwaysportslink.ui.admin;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +48,7 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
     public class EventViewHolder extends RecyclerView.ViewHolder {
         private final TextView eventTypeTextView;
         private final TextView venueTextView;
-        private final TextView organizerTextView;
-        private final TextView eventDateTextView;
+        private final TextView eventNumTextView;
         private final TextView expiredTextView;
         private final androidx.appcompat.widget.AppCompatButton deleteButton;
 
@@ -58,8 +56,7 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
             super(itemView);
             eventTypeTextView = itemView.findViewById(R.id.tv_event_type);
             venueTextView = itemView.findViewById(R.id.tv_venue);
-            organizerTextView = itemView.findViewById(R.id.tv_organizer);
-            eventDateTextView = itemView.findViewById(R.id.tv_event_date);
+            eventNumTextView = itemView.findViewById(R.id.tv_events_number);
             expiredTextView = itemView.findViewById(R.id.tv_event_expired); // New TextView for expiration
             deleteButton = itemView.findViewById(R.id.btn_delete);
         }
@@ -67,8 +64,7 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
         public void bind(Event event, int position) {
             eventTypeTextView.setText(event.getTitle()); // Assuming event type is the title
             venueTextView.setText(event.getVenue());
-            organizerTextView.setText(event.getCreatedBy() != null && !event.getCreatedBy().isEmpty() ? event.getCreatedBy() : "N/A");
-            eventDateTextView.setText(event.getDate());
+            eventNumTextView.setText(String.valueOf(position + 1));
 
             if (event.isExpired()) {
                 expiredTextView.setText("Expired");
@@ -87,7 +83,7 @@ public class ManageEventsAdapter extends RecyclerView.Adapter<ManageEventsAdapte
 
             // Item click handling for navigating to EventDetailsActivity
             itemView.setOnClickListener(v -> {
-              EventDetailsActivity.startIntent(context, event, true);
+                EventDetailsActivity.startIntent(context, event, true);
             });
         }
     }

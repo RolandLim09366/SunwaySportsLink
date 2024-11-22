@@ -1,5 +1,7 @@
 package com.example.sunwaysportslink.ui.splashscreen;
 
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -48,6 +50,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                         FirebaseService.getInstance().getUserRef().child(currentUser.getUid()).child("lastOnlineTime").setValue(lastOnlineTime);
                         // User is a regular user, navigate to HomeActivity
                         HomeActivity.startIntent(SplashScreenActivity.this);
+                        loadLocale();
                     }
                 } else {
                     // No user is logged in, navigate to LoginActivity
@@ -61,5 +64,20 @@ public class SplashScreenActivity extends AppCompatActivity {
     private String getCurrentTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
         return sdf.format(new Date());
+    }
+
+    private void loadLocale() {
+        // Get SharedPreferences using the current context
+        SharedPreferences prefs = getSharedPreferences("AppPreferences", MODE_PRIVATE);
+        String language = prefs.getString("languageCode", "en"); // Default to English
+        setLocale(language);
+    }
+
+    private void setLocale(String language) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
     }
 }

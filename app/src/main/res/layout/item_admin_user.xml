@@ -6,6 +6,14 @@
     android:orientation="horizontal"
     android:padding="8dp">
 
+    <TextView
+        android:id="@+id/tv_users_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:gravity="center"
+        android:padding="4dp" />
+
     <!-- Center Name -->
     <TextView
         android:id="@+id/tv_username"
@@ -16,36 +24,14 @@
         android:padding="4dp"
         android:text="Roland" />
 
-
-    <!-- Users -->
-    <TextView
-        android:id="@+id/tv_gender"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:padding="4dp"
-        android:text="Male" />
-
     <TextView
         android:id="@+id/tv_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:gravity="center"
         android:padding="4dp"
-        android:text="21085105@imail.sunway.edu.my"
-        android:textSize="10sp" />
-
-    <TextView
-        android:id="@+id/tv_phone_number"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:padding="4dp"
-        android:text="0192245657"
-       />
+        android:text="21085105@imail.sunway.edu.my" />
 
     <TextView
         android:id="@+id/tv_last_online_time"
