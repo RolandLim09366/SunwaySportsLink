@@ -1,5 +1,6 @@
 package com.example.sunwaysportslink.ui.event;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,7 +40,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText etParticipantLimit, etDetails;
     private Button btnCreateEvent, etEventDate;
     private Spinner spinnerEventType, spinnerVenue, timeSlotSpinner;
-    private final String[] timeSlots = {"7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM"};
+    private final String[] timeSlots = {"7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "12:00 AM"};
     private boolean isVenueSelected = false;
     private boolean isDateSelected = false;
     private FirebaseService firebaseService;
@@ -180,12 +181,6 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        // Set up initial venues based on the first sport type
-        List<String> initialVenues = sportVenueMap.get(eventTypes[0]);
-        ArrayAdapter<String> initialVenueAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, initialVenues);
-        initialVenueAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerVenue.setAdapter(initialVenueAdapter);
-
         // Populate timeSlotSpinner initially
         ArrayAdapter<String> timeSlotAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, timeSlots);
         timeSlotAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -237,6 +232,7 @@ public class CreateEventActivity extends AppCompatActivity {
                             // Success message
                             Toast.makeText(CreateEventActivity.this, "Event created successfully!", Toast.LENGTH_SHORT).show();
                             resetInputFields(); // Clear all fields after successful event creation
+                            finish();  // Navigate back to the previous screen
                         } else {
                             // Error message
                             Toast.makeText(CreateEventActivity.this, "Failed to create event. Try again!", Toast.LENGTH_SHORT).show();
@@ -252,18 +248,19 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void resetInputFields() {
         // Clear all input fields
         spinnerEventType.setSelection(0);
-        spinnerVenue.setSelection(0);
-        etEventDate.setText("");
         etParticipantLimit.setText("");
-        etDetails.setText("");
+        spinnerVenue.setSelection(0);
+        etEventDate.setText("Select Date");
+        etDetails.setText("Beginner Level");
     }
 
     private boolean validateInput() {
         // Check if any field is empty
-        return spinnerEventType.getSelectedItemPosition() != -1 && !etEventDate.getText().toString().isEmpty() && spinnerVenue.getSelectedItemPosition() != -1 && !etParticipantLimit.getText().toString().isEmpty();
+        return spinnerEventType.getSelectedItemPosition() != -1 && !etParticipantLimit.getText().toString().isEmpty() && spinnerVenue.getSelectedItemPosition() != -1 && !etEventDate.getText().toString().isEmpty() && !etEventDate.getText().toString().equals("Select Date") && timeSlotSpinner.getSelectedItemPosition() != -1;
     }
 
     // Method to show DatePickerDialog for event date

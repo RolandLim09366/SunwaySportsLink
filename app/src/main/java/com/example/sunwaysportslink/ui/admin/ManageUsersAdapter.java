@@ -1,7 +1,6 @@
 package com.example.sunwaysportslink.ui.admin;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,28 +45,24 @@ public class ManageUsersAdapter extends RecyclerView.Adapter<ManageUsersAdapter.
     }
 
     public class EventViewHolder extends RecyclerView.ViewHolder {
-        private final TextView usernameTextView;
-        private final TextView genderTextView;
+        private final TextView usernameTextView, userNumTextView;
         private final TextView emailTextView;
-        private final TextView phoneNumberTextView;
         private final TextView lastUpdatedTextView;
         private final androidx.appcompat.widget.AppCompatButton deleteButton;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
+            userNumTextView = itemView.findViewById(R.id.tv_users_number);
             usernameTextView = itemView.findViewById(R.id.tv_username);
-            genderTextView = itemView.findViewById(R.id.tv_gender);
             emailTextView = itemView.findViewById(R.id.tv_email);
-            phoneNumberTextView = itemView.findViewById(R.id.tv_phone_number);
             lastUpdatedTextView = itemView.findViewById(R.id.tv_last_online_time);
             deleteButton = itemView.findViewById(R.id.btn_delete);
         }
 
         public void bind(User user, int position) {
+            userNumTextView.setText(String.valueOf(position + 1));
             usernameTextView.setText(user.getUsername()); // Assuming event type is the title
-            genderTextView.setText(user.getGender());
             emailTextView.setText(user.getEmail());
-            phoneNumberTextView.setText(user.getPhone() != null ? user.getPhone() : "N/A");
             lastUpdatedTextView.setText(user.getLastOnlineTime());
 
             // Delete button click handling

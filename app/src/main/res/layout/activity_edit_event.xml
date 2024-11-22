@@ -79,10 +79,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/et_background"
-                android:hint="10"
                 android:inputType="number"
                 android:padding="8dp"
-                android:textSize="14sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_participant_limit" />
 
@@ -101,7 +99,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/et_background"
-                android:hint="@string/sunway_university_basketball_court"
                 android:padding="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_venue" />
@@ -123,7 +120,6 @@
                 android:background="@drawable/et_background"
                 android:clickable="true"
                 android:focusable="true"
-                android:hint="@string/select_date"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_event_date" />
 

@@ -18,6 +18,7 @@ import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.databinding.FragmentSettingBinding;
 import com.example.sunwaysportslink.ui.login.LoginActivity;
 import com.example.sunwaysportslink.ui.setting.accountdetails.AccountDetailsActivity;
+import com.example.sunwaysportslink.ui.setting.changelanguage.ChangeLanguageActivity;
 import com.example.sunwaysportslink.ui.setting.changepassword.ChangePasswordActivity;
 import com.example.sunwaysportslink.ui.setting.notification.NotificationActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -89,6 +90,8 @@ public class SettingFragment extends Fragment {
 
         ImageView notificationButton = binding.icBlackArrow2;
 
+        ImageView languageButton = binding.icBlackArrow4;
+
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,6 +120,14 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AccountDetailsActivity.startIntent(getActivity());
+            }
+        });
+
+        languageButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ChangeLanguageActivity.startIntent(getActivity());
             }
         });
 

@@ -1,6 +1,10 @@
 package com.example.sunwaysportslink.model;
 
-public class SportsNews {
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class SportsNews implements Serializable {
     private String id;  // Unique identifier for each news (Firebase key)
     private String title;
     private String description;

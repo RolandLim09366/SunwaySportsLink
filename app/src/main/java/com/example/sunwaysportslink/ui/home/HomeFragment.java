@@ -1,15 +1,19 @@
 package com.example.sunwaysportslink.ui.home;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.sunwaysportslink.R;
@@ -33,6 +37,8 @@ public class HomeFragment extends Fragment {
     //    private NewsAdapter newsAdapter;
     private final ArrayList<Event> favoriteEventsList = new ArrayList<>();
     private final ArrayList<SportsNews> sportsNewsList = new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar progressBar;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +48,13 @@ public class HomeFragment extends Fragment {
         tvWelcome = view.findViewById(R.id.tvWelcome);
         viewPagerFavorites = view.findViewById(R.id.viewPagerFavorites);
         recyclerViewNews = view.findViewById(R.id.recyclerViewNews);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout); // Initialize SwipeRefreshLayout
+        progressBar = view.findViewById(R.id.progressBar);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            fetchSportsNews(); // Re-fetch sports news
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
         // Set up the welcome message
         setupWelcomeMessage();
@@ -161,10 +174,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchSportsNews() {
+        progressBar.setVisibility(View.VISIBLE);
+
         FirebaseService firebaseService = FirebaseService.getInstance();
         firebaseService.getReference("sports_news").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                progressBar.setVisibility(View.GONE);
                 sportsNewsList.clear(); // Clear the previous data
                 for (DataSnapshot newsSnapshot : snapshot.getChildren()) {
                     String title = newsSnapshot.child("title").getValue(String.class);
@@ -186,5 +202,4 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
 }

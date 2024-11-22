@@ -182,6 +182,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void deleteEvent(Event event) {
         firebaseService.getEventsRef().child(event.getEventKey()).removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                DatabaseReference bookingsRef = firebaseService.getReference("Bookings").child(event.getVenue()).child(event.getDate());
+                bookingsRef.child(event.getStartTime()).removeValue();
                 Toast.makeText(EventDetailsActivity.this, "Event deleted successfully.", Toast.LENGTH_SHORT).show();
                 finish();  // Navigate back to the previous screen
             } else {

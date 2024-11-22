@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.sunwaysportslink.databinding.FragmentMyEventBinding;
 import com.example.sunwaysportslink.firebase.FirebaseService;
@@ -41,6 +42,7 @@ public class MyEventFragment extends Fragment {
         // Set up RecyclerView
         recyclerView = binding.rvMyEvents;
         tvNoEvents = binding.tvNoEvents;
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         myEventAdapter = new MyEventAdapter(myEventsList, position -> {
             Event event = myEventsList.get(position);

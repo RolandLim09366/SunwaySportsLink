@@ -21,6 +21,7 @@ import com.example.sunwaysportslink.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -75,7 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
         String email = emailTextView.getText().toString();
         String password = passwordTextView.getText().toString();
 
-        // Validate email input (exactly 8 digits followed by @imail.sunway.edu.my)
+        // Validate email input
         if (TextUtils.isEmpty(email) || !email.matches("^\\d{8}@imail\\.sunway\\.edu\\.my$")) {
             showToastAndHideProgress("Please enter a valid Sunway email address!");
             return;
@@ -91,27 +92,37 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-
                     // Send email verification
                     firebaseService.getAuth().getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> emailTask) {
                             if (emailTask.isSuccessful()) {
-
-                                // Get user ID and save user details to the database
+                                // Get user ID and create new user instance
                                 String userId = firebaseService.getAuth().getCurrentUser().getUid();
                                 User newUser = new User(email);
                                 newUser.setUserId(userId);
-                                firebaseService.getUserRef(userId).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(getApplicationContext(), "Registration successful! Verification email sent.", Toast.LENGTH_LONG).show();
-                                            firebaseService.getAuth().signOut(); // Sign out the user after registration
-                                            LoginActivity.startIntent(RegisterActivity.this);
-                                        } else {
-                                            showToastAndHideProgress("Error: " + task.getException().getMessage());
-                                        }
+
+                                // Retrieve FCM token and store user in database after token is set
+                                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(tokenTask -> {
+                                    if (tokenTask.isSuccessful()) {
+                                        String token = tokenTask.getResult();
+                                        newUser.setFcmToken(token);
+
+                                        // Save user details to the database
+                                        firebaseService.getUserRef(userId).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(getApplicationContext(), "Registration successful! Verification email sent.", Toast.LENGTH_LONG).show();
+                                                    firebaseService.getAuth().signOut(); // Sign out the user after registration
+                                                    LoginActivity.startIntent(RegisterActivity.this);
+                                                } else {
+                                                    showToastAndHideProgress("Error: " + task.getException().getMessage());
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        showToastAndHideProgress("Failed to retrieve FCM token. Please try again.");
                                     }
                                 });
                             } else {
@@ -119,13 +130,13 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         }
                     });
-
                 } else {
                     showToastAndHideProgress("Registration failed! Please try again later.");
                 }
             }
         });
     }
+
 
     private void showToastAndHideProgress(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();

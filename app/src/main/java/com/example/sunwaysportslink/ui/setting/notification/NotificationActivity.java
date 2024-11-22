@@ -29,7 +29,7 @@ public class NotificationActivity extends AppCompatActivity {
 
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // Enable the back arrow
-                getSupportActionBar().setTitle("");       // Set the title of the page
+                getSupportActionBar().setTitle("Notification Setting");       // Set the title of the page
             }
         }
 
