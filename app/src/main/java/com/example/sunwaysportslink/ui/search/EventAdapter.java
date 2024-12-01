@@ -1,6 +1,7 @@
 // EventAdapter.java
 package com.example.sunwaysportslink.ui.search;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -77,11 +78,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             this.binding = binding;
         }
 
+        @SuppressLint("SetTextI18n")
         public void bind(Event event) {
             binding.tvEventTitle.setText(event.getTitle());
             binding.tvEventDateTime.setText(event.getDate());
             binding.tvEventLocation.setText(event.getVenue());
-            binding.tvOrganizer.setText("Organiser: " + event.getCreatedBy());
+            binding.tvOrganizer.setText("Host: " + event.getCreatedBy());
 
             // Set click listener for each event
             itemView.setOnClickListener(v -> onEventClickListener.onEventClick(event));

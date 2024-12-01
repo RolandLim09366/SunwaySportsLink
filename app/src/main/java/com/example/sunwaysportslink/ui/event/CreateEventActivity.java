@@ -2,6 +2,8 @@ package com.example.sunwaysportslink.ui.event;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -10,7 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,10 +44,13 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText etParticipantLimit, etDetails;
     private Button btnCreateEvent, etEventDate;
     private Spinner spinnerEventType, spinnerVenue, timeSlotSpinner;
-    private final String[] timeSlots = {"7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "12:00 AM"};
+    private final String[] timeSlots = {"7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM"};
     private boolean isVenueSelected = false;
     private boolean isDateSelected = false;
     private FirebaseService firebaseService;
+    private ImageView ivSportVenue;
+    private TextView tvViewBookingList;
+
     private final HashMap<String, List<String>> sportVenueMap = new HashMap<String, List<String>>() {{
         put("Basketball", Arrays.asList("Basketball Court Half A", "Basketball Court Half B"));
         put("Football", Collections.singletonList("Football Field"));
@@ -51,6 +58,19 @@ public class CreateEventActivity extends AppCompatActivity {
         put("Volleyball", Collections.singletonList("Volleyball Court"));
         put("Tennis", Collections.singletonList("Tennis Court"));
     }};
+
+    private final HashMap<String, Integer> sportParticipantLimitMap = new HashMap<String, Integer>() {{
+        put("Basketball", 10);
+        put("Football", 22);
+        put("Futsal", 12);
+        put("Volleyball", 12);
+        put("Tennis", 4);
+    }};
+
+    public static void startIntent(Context context) {
+        Intent intent = new Intent(context, CreateEventActivity.class);
+        context.startActivity(intent); // Start the RegisterActivity directly
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +85,10 @@ public class CreateEventActivity extends AppCompatActivity {
         spinnerEventType = findViewById(R.id.spinner_event_type);
         spinnerVenue = findViewById(R.id.spinner_venue);
         timeSlotSpinner = findViewById(R.id.spinner_time_slot);
+        ivSportVenue = findViewById(R.id.iv_sports_venue);
+        tvViewBookingList = findViewById(R.id.tv_view_booking_list);
+
+        tvViewBookingList = findViewById(R.id.tv_view_booking_list);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -98,6 +122,9 @@ public class CreateEventActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 isVenueSelected = true;
                 checkAndLoadAvailableTimeSlots();  // Only call the function if both venue and date are selected
+
+                String selectedVenue = spinnerVenue.getSelectedItem().toString();
+                ivSportVenue.setImageResource(getVenueImageResource(selectedVenue));
             }
 
             @Override
@@ -105,6 +132,25 @@ public class CreateEventActivity extends AppCompatActivity {
                 // Do nothing
             }
         });
+    }
+
+    private int getVenueImageResource(String venue) {
+        switch (venue) {
+            case "Basketball Court Half A":
+                return R.drawable.iv_half_a;
+            case "Basketball Court Half B":
+                return R.drawable.iv_half_b;
+            case "Football Field":
+                return R.drawable.iv_football_field;
+            case "Multi-sports Court":
+                return R.drawable.iv_multipurpose_court;
+            case "Volleyball Court":
+                return R.drawable.iv_volleyball;
+            case "Tennis Court":
+                return R.drawable.iv_tennis_court;
+            default:
+                return R.drawable.iv_sports; // Default image
+        }
     }
 
     // Helper function to check both selections and load time slots
@@ -117,6 +163,17 @@ public class CreateEventActivity extends AppCompatActivity {
     private void loadAvailableTimeSlots() {
         String selectedVenue = spinnerVenue.getSelectedItem().toString();
         String selectedDate = etEventDate.getText().toString();
+        tvViewBookingList.setVisibility(View.VISIBLE);
+        tvViewBookingList.setOnClickListener(v -> {
+            if (selectedVenue != null && selectedDate != null) {
+                Intent intent = new Intent(CreateEventActivity.this, BookingScheduleActivity.class);
+                intent.putExtra("selectedVenue", selectedVenue);
+                intent.putExtra("selectedDate", selectedDate);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Please select both venue and date", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Ensure that both the venue and date are selected before proceeding
         if (!selectedDate.isEmpty() && !selectedVenue.isEmpty()) {
@@ -173,11 +230,18 @@ public class CreateEventActivity extends AppCompatActivity {
 
                 isVenueSelected = false;  // Reset venue selection state
                 checkAndLoadAvailableTimeSlots();  // Reload time slots if needed
+
+                // Set the participant limit based on the selected sport
+                if (sportParticipantLimitMap.containsKey(selectedSportType)) {
+                    int participantLimit = sportParticipantLimitMap.get(selectedSportType);
+                    etParticipantLimit.setText(String.valueOf(participantLimit)); // Set the default participant limit
+                } else {
+                    etParticipantLimit.setText(""); // Clear if no default limit is found
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
             }
         });
 
@@ -215,32 +279,32 @@ public class CreateEventActivity extends AppCompatActivity {
                     } else {
                         organizerName = user.getEmail();
                     }
-
-                    // Create an Event object
-                    Event event = new Event(eventTitle, eventDate, eventVenue, selectedTimeSlot, participantLimit, eventDetails, organizerName);
-                    event.addJoinedUser(userId); // Use the user ID instead of email
-
-                    Log.d("CreateEventActivity", "Joined Users: " + event.getJoinedUsers().toString()); // Check if the list contains the user
-
-                    // Push the event data to the Firebase database
-                    String eventKey = firebaseService.getEventsRef().push().getKey();  // Retrieve the unique event key from Firebase
-                    event.setEventKey(eventKey);
-
-                    firebaseService.getEventsRef().child(eventKey).setValue(event).addOnCompleteListener(eventTask -> {
-                        if (eventTask.isSuccessful()) {
-
-                            // Success message
-                            Toast.makeText(CreateEventActivity.this, "Event created successfully!", Toast.LENGTH_SHORT).show();
-                            resetInputFields(); // Clear all fields after successful event creation
-                            finish();  // Navigate back to the previous screen
-                        } else {
-                            // Error message
-                            Toast.makeText(CreateEventActivity.this, "Failed to create event. Try again!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
                 } else {
-                    Toast.makeText(CreateEventActivity.this, "Failed to retrieve user information", Toast.LENGTH_SHORT).show();
+                    organizerName = "admin";
                 }
+
+                // Create an Event object
+                Event event = new Event(eventTitle, eventDate, eventVenue, selectedTimeSlot, participantLimit, eventDetails, organizerName);
+                event.addJoinedUser(userId); // Use the user ID instead of email
+
+                Log.d("CreateEventActivity", "Joined Users: " + event.getJoinedUsers().toString()); // Check if the list contains the user
+
+                // Push the event data to the Firebase database
+                String eventKey = firebaseService.getEventsRef().push().getKey();  // Retrieve the unique event key from Firebase
+                event.setEventKey(eventKey);
+
+                firebaseService.getEventsRef().child(eventKey).setValue(event).addOnCompleteListener(eventTask -> {
+                    if (eventTask.isSuccessful()) {
+
+                        // Success message
+                        Toast.makeText(CreateEventActivity.this, "Event created successfully!", Toast.LENGTH_SHORT).show();
+                        resetInputFields(); // Clear all fields after successful event creation
+                        finish();  // Navigate back to the previous screen
+                    } else {
+                        // Error message
+                        Toast.makeText(CreateEventActivity.this, "Failed to create event. Try again!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             } else {
                 // Handle failure to retrieve user data
                 Toast.makeText(CreateEventActivity.this, "Error fetching user data", Toast.LENGTH_SHORT).show();
@@ -256,6 +320,7 @@ public class CreateEventActivity extends AppCompatActivity {
         spinnerVenue.setSelection(0);
         etEventDate.setText("Select Date");
         etDetails.setText("Beginner Level");
+        tvViewBookingList.setVisibility(View.GONE);
     }
 
     private boolean validateInput() {
@@ -277,7 +342,7 @@ public class CreateEventActivity extends AppCompatActivity {
             String formattedDate = sdf.format(calendar.getTime());
             etEventDate.setText(formattedDate);  // Set formatted date to the EditText
             isDateSelected = true;
-            loadAvailableTimeSlots();  // Load slots based on the selected date
+            checkAndLoadAvailableTimeSlots();  // Load slots based on the selected date
         }, year, month, day);
         datePickerDialog.show();
     }

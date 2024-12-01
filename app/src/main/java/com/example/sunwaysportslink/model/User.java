@@ -9,7 +9,7 @@ public class User {
     private String favourite_sports;
     private String lastOnlineTime; // New field for last online time
     private String fcmToken;
-
+    private String profileImageUrl;
 
     // No-argument constructor (required for Firebase)
     public User() {
@@ -103,5 +103,15 @@ public class User {
 
     public void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
+    }
+
+    // Getter for profileImageUrl
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    // Setter for profileImageUrl
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

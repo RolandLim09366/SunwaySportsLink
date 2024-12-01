@@ -31,6 +31,8 @@ import com.example.sunwaysportslink.firebase.FirebaseService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -175,10 +177,11 @@ public class AccountDetailsActivity extends AppCompatActivity {
             } else if (requestCode == TAKE_PHOTO && data != null) {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
-                profileImage.setImageBitmap(imageBitmap); // Set captured image to profileImage
 
                 // Convert the Bitmap to Uri and upload to Firebase Storage
                 Uri imageUri = getImageUriFromBitmap(this, imageBitmap);
+                profileImage.setImageURI(imageUri); // Set captured image to profileImage
+
                 uploadImageToFirebase(imageUri); // Upload the captured image
             }
         }
@@ -191,19 +194,31 @@ public class AccountDetailsActivity extends AppCompatActivity {
     }
 
     private void uploadImageToFirebase(Uri imageUri) {
-        // Convert the Uri to a string before storing it in Firebase
-        String imageUrl = imageUri.toString();
 
-        // Update the user profile image URL under the "users" node
-        firebaseService.getUserRef(userId).child("profileImageUrl").setValue(imageUrl).addOnCompleteListener(task -> {
+        // Define a unique path for storing the image in Firebase Storage
+        String storagePath = "profile_images/" + userId + ".jpg";
+        StorageReference storageReference = FirebaseStorage.getInstance("gs://sunwaysportslink.firebasestorage.app").getReference().child(storagePath);
+
+        // Upload the image to Firebase Storage
+        storageReference.putFile(imageUri).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(AccountDetailsActivity.this, "Profile image updated successfully", Toast.LENGTH_SHORT).show();
+                // Get the download URL of the uploaded image
+                storageReference.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                    String imageUrl = downloadUri.toString();
+
+                    // Update the database with the profileImageUrl
+                    firebaseService.getUserRef(userId).child("profileImageUrl").setValue(imageUrl).addOnCompleteListener(dbTask -> {
+                        if (dbTask.isSuccessful()) {
+                        } else {
+                            Toast.makeText(AccountDetailsActivity.this, "Failed to update profile image in database", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
             } else {
-                Toast.makeText(AccountDetailsActivity.this, "Failed to update profile image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AccountDetailsActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 
     private void saveUserData() {
         // Collect data from EditTexts
@@ -220,6 +235,7 @@ public class AccountDetailsActivity extends AppCompatActivity {
         userDetails.put("phone", updatedPhone);
         userDetails.put("gender", updatedGender);
         userDetails.put("favourite_sports", updatedFavouriteSports);
+
 
         // Save data to Firebase Realtime Database
         firebaseService.getUserRef(userId).updateChildren(userDetails).addOnCompleteListener(task -> {
@@ -262,14 +278,12 @@ public class AccountDetailsActivity extends AppCompatActivity {
                     spinnerFavouriteEvent.setSelection(getIndexForSpinner(spinnerFavouriteEvent, dataSnapshot.child("favourite_sports").getValue(String.class)));  // Assuming 'title' refers to event type
 
 
-                    // Load and display the profile image (if it exists)
+                    // Load profile image
                     String profileImageUrl = dataSnapshot.child("profileImageUrl").getValue(String.class);
-                    if (!isDestroyed()) {
+                    if (!isDestroyed() && !isFinishing()) {
                         if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
-                            // Use Glide to load the image into the profileImage view
-                            Glide.with(AccountDetailsActivity.this).load(profileImageUrl).placeholder(R.drawable.iv_default_profile)  // Placeholder image while loading
-                                    .error(R.drawable.iv_default_profile)        // Fallback if image fails to load
-                                    .into(profileImage);
+                            Glide.with(AccountDetailsActivity.this).load(profileImageUrl)  // Optional placeholder image
+                                    .into(profileImage);                    // Replace with actual ImageView reference
                         } else {
                             profileImage.setImageResource(R.drawable.iv_default_profile);
                         }
