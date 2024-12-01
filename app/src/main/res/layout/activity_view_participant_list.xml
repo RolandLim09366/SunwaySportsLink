@@ -16,68 +16,52 @@
         android:orientation="horizontal"
         android:padding="8dp">
 
+        <!-- Center Name -->
         <TextView
-            android:id="@+id/tv_users_number"
+            android:id="@+id/tv_participant"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
+            android:layout_weight="0.5"
             android:gravity="center"
             android:padding="4dp"
-            android:text="EVENTS"
-            android:textSize="12sp" />
+            android:text="NUM" />
 
         <!-- Center Name -->
         <TextView
-            android:id="@+id/tv_sport_type"
+            android:id="@+id/tv_profile_pic"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:padding="4dp"
-            android:text="@string/sport_type" />
+            android:text="PROFILE PICTURE" />
 
+
+        <!-- Users -->
         <TextView
-            android:id="@+id/tv_venue"
+            android:id="@+id/tv_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.3"
+            android:layout_weight="1.0"
             android:gravity="center"
             android:padding="4dp"
-            android:text="@string/venue" />
+            android:text="@string/username" />
 
         <TextView
-            android:id="@+id/tv_is_expired"
+            android:id="@+id/tv_email"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:gravity="center"
             android:padding="4dp"
-            android:text="@string/expired" />
-
-        <TextView
-            android:id="@+id/tv_delete"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="4dp"
-            android:text="@string/delete" />
+            android:text="@string/email" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_events"
+        android:id="@+id/recyclerViewJoinedUsers"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="vertical" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_add_events"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="@drawable/bg_btn_register"
-        android:text="@string/create_event"
-        android:textColor="@color/white" />
 
 </LinearLayout>

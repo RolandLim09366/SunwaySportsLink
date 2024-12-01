@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sunwaysportslink.R;
 import com.example.sunwaysportslink.firebase.FirebaseService;
 import com.example.sunwaysportslink.model.Event;
+import com.example.sunwaysportslink.ui.event.CreateEventActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -25,6 +28,7 @@ public class ManageEventsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ManageEventsAdapter eventAdapter;
     private List<Event> eventList;
+    private AppCompatButton btnAddEvents;
 
     public static void startIntent(Context context) {
         Intent intent = new Intent(context, ManageEventsActivity.class);
@@ -37,6 +41,7 @@ public class ManageEventsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_events);
 
         recyclerView = findViewById(R.id.recycler_view_events);
+        btnAddEvents = findViewById(R.id.btn_add_events);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         eventList = new ArrayList<>();
@@ -54,6 +59,11 @@ public class ManageEventsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // Enable the back arrow
             getSupportActionBar().setTitle("Manage Events");       // Set the title of the page
         }
+
+        btnAddEvents.setOnClickListener(v -> {
+            // Start activity to add news
+            CreateEventActivity.startIntent(ManageEventsActivity.this);
+        });
     }
 
     private void loadEventsFromDatabase() {

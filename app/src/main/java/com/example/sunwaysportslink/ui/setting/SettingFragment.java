@@ -20,9 +20,7 @@ import com.example.sunwaysportslink.ui.login.LoginActivity;
 import com.example.sunwaysportslink.ui.setting.accountdetails.AccountDetailsActivity;
 import com.example.sunwaysportslink.ui.setting.changelanguage.ChangeLanguageActivity;
 import com.example.sunwaysportslink.ui.setting.changepassword.ChangePasswordActivity;
-import com.example.sunwaysportslink.ui.setting.notification.NotificationActivity;
 import com.google.firebase.auth.FirebaseAuth;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -88,8 +86,6 @@ public class SettingFragment extends Fragment {
 
         ImageView changePasswordButton = binding.icBlackArrow3;
 
-        ImageView notificationButton = binding.icBlackArrow2;
-
         ImageView languageButton = binding.icBlackArrow4;
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -109,12 +105,6 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        notificationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NotificationActivity.startIntent(getActivity());
-            }
-        });
 
         accountButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,12 +124,16 @@ public class SettingFragment extends Fragment {
         viewModel.profileImageUrl.observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String imageUrl) {
-                if (imageUrl != null && !imageUrl.isEmpty()) {
-                    Glide.with(SettingFragment.this).load(imageUrl).placeholder(R.drawable.iv_default_profile) // Placeholder image while loading
-                            .error(R.drawable.iv_default_profile)       // Fallback if image fails to load
-                            .into(binding.profilePicture);              // Use the binding to refer to the ImageView
-                } else {
-                    binding.profilePicture.setImageResource(R.drawable.iv_default_profile);
+                if (isAdded()) { // Check if the fragment is attached to an activity
+                    if (imageUrl != null && !imageUrl.isEmpty()) {
+                        Glide.with(SettingFragment.this)
+                                .load(imageUrl)
+                                .placeholder(R.drawable.iv_default_profile)
+                                .error(R.drawable.iv_default_profile)
+                                .into(binding.profilePicture);
+                    } else {
+                        binding.profilePicture.setImageResource(R.drawable.iv_default_profile);
+                    }
                 }
             }
         });

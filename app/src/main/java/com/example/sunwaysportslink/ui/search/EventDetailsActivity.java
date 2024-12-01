@@ -2,6 +2,7 @@ package com.example.sunwaysportslink.ui.search;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -25,6 +26,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,10 +37,10 @@ import java.util.Locale;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
-    private TextView tvParticipant, tvEventName, tvEventDate, tvEventVenue, tvTime, tvOrganizer, tvDetails;
+    private TextView tvParticipant, tvEventName, tvEventDate, tvEventVenue, tvTime, tvOrganizer, tvDetails, tvViewParticipantList;
     private FirebaseService firebaseService;
     private AppCompatButton btnJoinEvent, btnQuitEvent, btnDeleteEvent;
-    private ImageView ivEventImage, editIcon;
+    private ImageView ivEventImage, editIcon, shareIcon;
 
     public static void startIntent(Context context, Event event, boolean isCreator) {
         Intent intent = new Intent(context, EventDetailsActivity.class);
@@ -72,6 +75,8 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvParticipant = findViewById(R.id.tv_participant);
         tvOrganizer = findViewById(R.id.created_by);
         tvDetails = findViewById(R.id.tv_details);
+        tvViewParticipantList = findViewById(R.id.tv_view_participant_list);
+        shareIcon = findViewById(R.id.iv_share);
 
         tvEventName.setText(event.getTitle() + " Casual Play");
 
@@ -88,6 +93,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         editIcon = findViewById(R.id.iv_edit);
         btnDeleteEvent = findViewById(R.id.btn_cancel_event);
 
+        tvViewParticipantList.setOnClickListener(v -> {
+            ParticipantListActivity.startIntent(this, event);
+        });
+
+        shareIcon.setOnClickListener(view -> {
+            shareEvent();
+        });
+
         // Show the edit icon only if the user is the creator
         if (isCreator) {
             editIcon.setVisibility(View.VISIBLE);
@@ -103,20 +116,23 @@ public class EventDetailsActivity extends AppCompatActivity {
             editIcon.setVisibility(View.GONE); // Hide the edit icon for non-creators
         }
 
-        switch (event.getTitle().toLowerCase()) {
-            case "basketball":
-                ivEventImage.setImageResource(R.drawable.iv_basketball);
+        switch (event.getVenue()) {
+            case "Basketball Court Half A":
+                ivEventImage.setImageResource(R.drawable.iv_half_a);
                 break;
-            case "football":
-                ivEventImage.setImageResource(R.drawable.iv_football);
+            case "Basketball Court Half B":
+                ivEventImage.setImageResource(R.drawable.iv_half_b);
                 break;
-            case "tennis":
-                ivEventImage.setImageResource(R.drawable.iv_tennis);
+            case "Football Field":
+                ivEventImage.setImageResource(R.drawable.iv_football_field);
                 break;
-            case "futsal":
-                ivEventImage.setImageResource(R.drawable.iv_futsal);
+            case "Tennis Court":
+                ivEventImage.setImageResource(R.drawable.iv_tennis_court);
                 break;
-            case "volleyball":
+            case "Multi-sports Court":
+                ivEventImage.setImageResource(R.drawable.iv_multipurpose_court);
+                break;
+            case "Volleyball Court":
                 ivEventImage.setImageResource(R.drawable.iv_volleyball);
                 break;
             default:
@@ -139,6 +155,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                     if (event.getCreatedBy().equals(user.getUsername())) {
                         btnQuitEvent.setText("Organizer");
                         btnQuitEvent.setEnabled(false);  // Disable the join button for the organizer
+                        btnJoinEvent.setVisibility(View.GONE);  // Hide quit button since the event is expired
                     }
                     if (event.isExpired()) {
                         btnJoinEvent.setText("Expired");
@@ -190,6 +207,33 @@ public class EventDetailsActivity extends AppCompatActivity {
                 Toast.makeText(EventDetailsActivity.this, "Failed to delete the event. Please try again.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void shareEvent() {
+        Event event = (Event) getIntent().getSerializableExtra("event");
+        String deepLinkUrl = "https://sunwaysportslink.page.link/?eventKey=" + event.getEventKey();
+
+        DynamicLink.Builder builder = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse(deepLinkUrl))
+                .setDomainUriPrefix("https://sunwaysportslink.page.link")
+                .setAndroidParameters(
+                        new DynamicLink.AndroidParameters.Builder()
+                                .setFallbackUrl(Uri.parse(deepLinkUrl)) // Fallback URL if app isn't installed
+                                .build()
+                );
+
+        builder.buildShortDynamicLink()
+                .addOnSuccessListener(shortDynamicLink -> {
+                    Uri shortLink = shortDynamicLink.getShortLink();
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this event: " + shortLink);
+                    startActivity(Intent.createChooser(shareIntent, "Share Event"));
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("ShareEvent", "Error creating dynamic link", e);
+                    // Show error message to user
+                });
     }
 
     private String getOneHourTimeRange(String startTime) {

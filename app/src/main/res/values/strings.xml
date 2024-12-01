@@ -100,5 +100,7 @@
     <string name="english">English</string>
     <string name="mandarin">Mandarin</string>
     <string name="bahasa_melayu">Bahasa Melayu</string>
+    <string name="view_participant_list"><u>View Participant List</u></string>
+    <string name="booking_schedule_list"><u>Booking Schedule List</u></string>
 
 </resources>

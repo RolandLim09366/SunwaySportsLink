@@ -1,6 +1,5 @@
 package com.example.sunwaysportslink.ui.event;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.sunwaysportslink.databinding.FragmentMyEventBinding;
 import com.example.sunwaysportslink.firebase.FirebaseService;
@@ -59,8 +57,7 @@ public class MyEventFragment extends Fragment {
         // Set up click listener for the "Add Event" button
         binding.fabAddEvent.setOnClickListener(v -> {
             // Navigate to Create Event page
-            Intent intent = new Intent(getContext(), CreateEventActivity.class); // Assuming the CreateEvent page is an activity
-            startActivity(intent);
+            CreateEventActivity.startIntent(getActivity());
         });
 
         return binding.getRoot();
