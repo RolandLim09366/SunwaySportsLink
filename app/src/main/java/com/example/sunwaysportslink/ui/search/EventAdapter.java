@@ -36,27 +36,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
         holder.bind(event);
-        // Dynamically set the image based on the event type
-        switch (event.getTitle().toLowerCase()) {
-            case "basketball":
-                holder.binding.ivSports.setImageResource(R.drawable.iv_basketball);
-                break;
-            case "football":
-                holder.binding.ivSports.setImageResource(R.drawable.iv_football);
-                break;
-            case "tennis":
-                holder.binding.ivSports.setImageResource(R.drawable.iv_tennis);
-                break;
-            case "futsal":
-                holder.binding.ivSports.setImageResource(R.drawable.iv_futsal);
-                break;
-            case "volleyball":
-                holder.binding.ivSports.setImageResource(R.drawable.iv_volleyball);
-                break;
-            default:
-                holder.binding.ivSports.setImageResource(R.drawable.iv_sports);  // Default image
-                break;
-        }
     }
 
     @Override
@@ -84,6 +63,27 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             binding.tvEventDateTime.setText(event.getDate());
             binding.tvEventLocation.setText(event.getVenue());
             binding.tvOrganizer.setText("Host: " + event.getCreatedBy());
+
+            switch (event.getTitle().toLowerCase()) {
+                case "basketball":
+                    binding.ivSports.setImageResource(R.drawable.iv_basketball);
+                    break;
+                case "football":
+                    binding.ivSports.setImageResource(R.drawable.iv_football);
+                    break;
+                case "tennis":
+                    binding.ivSports.setImageResource(R.drawable.iv_tennis);
+                    break;
+                case "futsal":
+                    binding.ivSports.setImageResource(R.drawable.iv_futsal);
+                    break;
+                case "volleyball":
+                    binding.ivSports.setImageResource(R.drawable.iv_volleyball);
+                    break;
+                default:
+                    binding.ivSports.setImageResource(R.drawable.iv_sports);  // Default image
+                    break;
+            }
 
             // Set click listener for each event
             itemView.setOnClickListener(v -> onEventClickListener.onEventClick(event));
