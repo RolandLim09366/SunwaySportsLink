@@ -68,39 +68,37 @@
 
     <TextView
         android:id="@+id/forgot_password"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
-        android:paddingVertical="4dp"
         android:text="@string/forgot_your_password"
         android:textSize="12sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_login"
         app:layout_constraintLeft_toLeftOf="@id/password"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintRight_toLeftOf="@+id/btn_login"
+        app:layout_constraintTop_toTopOf="@+id/btn_login" />
 
-    <!-- Button for register with text "Register" -->
     <TextView
         android:id="@+id/btn_login"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:background="@drawable/bg_btn_enter"
-        android:drawablePadding="6dp"
         android:gravity="center"
-        android:paddingHorizontal="80dp"
         android:paddingVertical="4dp"
         android:text="@string/enter"
         android:textColor="@color/white"
         android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@+id/forgot_password"
         app:layout_constraintRight_toRightOf="@id/password"
-        app:layout_constraintTop_toBottomOf="@id/password"
-        app:layout_constraintTop_toTopOf="@id/forgot_password" />
+        app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <ImageView
         android:id="@+id/iv_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="-75dp"
+        android:layout_marginStart="-58dp"
         android:layout_marginTop="2dp"
         android:src="@drawable/ic_white_arrow"
         app:layout_constraintBottom_toBottomOf="@id/btn_login"

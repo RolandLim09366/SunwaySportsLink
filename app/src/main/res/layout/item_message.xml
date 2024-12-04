@@ -1,0 +1,81 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Row for sender's profile image and message -->
+    <LinearLayout
+        android:id="@+id/senderMessageLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <!-- Sender profile image -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageViewSenderProfile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/iv_default_profile" />
+
+        <!-- Message content -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Sender's username -->
+            <TextView
+                android:id="@+id/textViewSenderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:text="Sender Name"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <!-- Sender's message -->
+            <TextView
+                android:id="@+id/textViewSenderMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/et_background"
+                android:padding="8dp"
+                android:text="Sender message"
+                android:textColor="@color/black" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Row for current user's message -->
+    <LinearLayout
+        android:id="@+id/myMessageLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <!-- Message content -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Current user's message -->
+            <TextView
+                android:id="@+id/textViewMyMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_btn_register"
+                android:gravity="end"
+                android:padding="8dp"
+                android:text="My message"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -121,7 +121,8 @@
                 android:background="@drawable/et_background"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="@string/select_date"
+                android:hint="@string/select_date"
+                android:textColorHint="@color/black"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_event_date" />
 

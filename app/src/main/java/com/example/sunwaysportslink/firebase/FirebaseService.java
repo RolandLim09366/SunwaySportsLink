@@ -57,4 +57,9 @@ public class FirebaseService {
     public DatabaseReference getEventsRef() {
         return getReference("events");
     }
+
+
+    public DatabaseReference getEventsRef(String eventId) {
+        return getReference("events").child(eventId);
+    }
 }
